@@ -1,0 +1,97 @@
+{
+  "aligned_tensors": {
+    "feats": {
+      "mae": 3.4799838066101074,
+      "max_abs": 31.19086265563965,
+      "mean_cosine": 0.5161488652229309,
+      "median_cosine": 0.5890843272209167,
+      "rmse": 4.58884334564209,
+      "sampled": false,
+      "shared_rows_compared": 12081,
+      "valid_cosine_rows": 12081
+    }
+  },
+  "coordinate_overlap": {
+    "jaccard": 0.6466998554681227,
+    "left_coverage": 0.7866258627425446,
+    "left_only_count": 3277,
+    "right_coverage": 0.7842768112178655,
+    "right_only_count": 3323,
+    "shared_count": 12081,
+    "union_count": 18681
+  },
+  "left": {
+    "coords": {
+      "count": 15358,
+      "dims": 4,
+      "max": [
+        0,
+        61,
+        61,
+        55
+      ],
+      "min": [
+        0,
+        2,
+        6,
+        1
+      ]
+    },
+    "name": "shape_slat_denormalized",
+    "stage": "stage3b_shape_hr",
+    "tensors": {
+      "feats": {
+        "dtype": "torch.float32",
+        "inf_count": 0,
+        "max": 22.710796356201172,
+        "mean": 0.04386664181947708,
+        "min": -22.329225540161133,
+        "nan_count": 0,
+        "shape": [
+          15358,
+          32
+        ],
+        "std": 4.49772310256958,
+        "zero_fraction": 0.0
+      }
+    }
+  },
+  "left_path": "artifacts/runs/m13_cuda_reference_robot_9_12step/debug/stage3b_shape_hr_shape_slat_denormalized.pt",
+  "right": {
+    "coords": {
+      "count": 15404,
+      "dims": 4,
+      "max": [
+        0,
+        61,
+        61,
+        54
+      ],
+      "min": [
+        0,
+        2,
+        5,
+        0
+      ]
+    },
+    "name": "shape_slat_denormalized",
+    "stage": "stage3b_shape_hr",
+    "tensors": {
+      "feats": {
+        "dtype": "torch.float32",
+        "inf_count": 0,
+        "max": 23.536741256713867,
+        "mean": 0.043939340859651566,
+        "min": -20.712827682495117,
+        "nan_count": 0,
+        "shape": [
+          15404,
+          32
+        ],
+        "std": 4.464916229248047,
+        "zero_fraction": 0.0
+      }
+    }
+  },
+  "right_path": "artifacts/runs/m14_mac_robot_9_12step_geometry/debug/stage3b_shape_hr_shape_slat_denormalized.pt"
+}

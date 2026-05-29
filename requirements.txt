@@ -1,0 +1,10 @@
+# Dependencies for the verification harness (scripts/ and tests/).
+# The Pixal3D pipeline itself has its own, heavier requirements — see the
+# upstream repo and patches/apply.sh. These cover the standalone validators,
+# comparators, and tests in this repository.
+torch
+numpy
+trimesh
+pillow
+pytest
+httpx

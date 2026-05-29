@@ -1,0 +1,1787 @@
+diff --git a/inference.py b/inference.py
+index 4fe1c44..a9d3acf 100644
+--- a/inference.py
++++ b/inference.py
+@@ -8,13 +8,12 @@ import cv2
+ from PIL import Image
+ 
+ os.environ['OPENCV_IO_ENABLE_OPENEXR'] = '1'
+-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+-os.environ.setdefault("ATTN_BACKEND", "flash_attn")
+-os.environ["FLEX_GEMM_AUTOTUNE_CACHE_PATH"] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'autotune_cache.json')
+-os.environ["FLEX_GEMM_AUTOTUNER_VERBOSE"] = '1'
++os.environ.setdefault("ATTN_BACKEND", "sdpa")
++os.environ.setdefault("SPARSE_ATTN_BACKEND", "sdpa")
++os.environ.setdefault("FLEX_GEMM_AUTOTUNE_CACHE_PATH", os.path.join(os.path.dirname(os.path.abspath(__file__)), 'autotune_cache.json'))
+ 
+ from pixal3d.pipelines import Pixal3DImageTo3DPipeline
+-import o_voxel
++from pixal3d.utils.device import empty_device_cache, resolve_device
+ 
+ # ============================================================================
+ # Constants & Defaults
+@@ -63,15 +62,17 @@ def build_image_cond_model(config: dict):
+     return model
+ 
+ 
+-def load_moge_model(device="cuda", model_name=MOGE_MODEL_NAME):
++def load_moge_model(device=None, model_name=MOGE_MODEL_NAME):
+     from moge.model.v2 import MoGeModel
++    device = resolve_device(device)
+     moge_model = MoGeModel.from_pretrained(model_name)
+     moge_model = moge_model.to(device)
+     moge_model.eval()
+     return moge_model
+ 
+ 
+-def init_pipeline(model_path=MODEL_PATH, device="cuda", low_vram=False):
++def init_pipeline(model_path=MODEL_PATH, device=None, low_vram=False):
++    device = resolve_device(device)
+     print(f"[Pipeline] Loading from {model_path}...")
+     pipeline = Pixal3DImageTo3DPipeline.from_pretrained(model_path)
+ 
+@@ -90,17 +91,17 @@ def init_pipeline(model_path=MODEL_PATH, device="cuda", low_vram=False):
+             m = getattr(pipeline, attr, None)
+             if m is not None and getattr(m, 'use_naf_upsample', False):
+                 m._load_naf()
+-        pipeline._device = torch.device(device)
++        pipeline._device = device
+         pipeline.low_vram = True
+         print("[Pipeline] Low-VRAM mode enabled.")
+     else:
+         # Standard mode: all models loaded to GPU at once (faster, needs more VRAM).
+         pipeline.low_vram = False
+-        pipeline.cuda()
+-        pipeline.image_cond_model_ss.cuda()
+-        pipeline.image_cond_model_shape_512.cuda()
+-        pipeline.image_cond_model_shape_1024.cuda()
+-        pipeline.image_cond_model_tex_1024.cuda()
++        pipeline.to(device)
++        pipeline.image_cond_model_ss.to(device)
++        pipeline.image_cond_model_shape_512.to(device)
++        pipeline.image_cond_model_shape_1024.to(device)
++        pipeline.image_cond_model_tex_1024.to(device)
+         print("[NAF] Pre-loading NAF upsampler model...")
+         for attr in ['image_cond_model_ss', 'image_cond_model_shape_512',
+                      'image_cond_model_shape_1024', 'image_cond_model_tex_1024']:
+@@ -134,7 +135,8 @@ def distance_from_fov(camera_angle_x, grid_point, target_point, mesh_scale, imag
+     return {"distance_from_x": float(distance_x), "f_pixels": float(f_pixels)}
+ 
+ 
+-def get_camera_params_wild_moge(image_path, moge_model, device="cuda", mesh_scale=1.0, extend_pixel=0, image_resolution=512):
++def get_camera_params_wild_moge(image_path, moge_model, device=None, mesh_scale=1.0, extend_pixel=0, image_resolution=512):
++    device = resolve_device(device)
+     pil_image = Image.open(image_path).convert("RGB")
+     width, height = pil_image.size
+     image_np = np.array(pil_image).astype(np.float32) / 255.0
+@@ -154,6 +156,168 @@ def get_camera_params_wild_moge(image_path, moge_model, device="cuda", mesh_scal
+     )["distance_from_x"]
+     return {'camera_angle_x': camera_angle_x, 'distance': distance, 'mesh_scale': mesh_scale}
+ 
++
++def export_geometry_glb(mesh, output_path: str) -> None:
++    import trimesh
++
++    vertices = mesh.vertices.detach().cpu().numpy()
++    faces = mesh.faces.detach().cpu().numpy()
++    glb = trimesh.Trimesh(vertices=vertices, faces=faces, process=False)
++    rot = np.array([
++        [-1,  0,  0,  0],
++        [ 0,  0, -1,  0],
++        [ 0, -1,  0,  0],
++        [ 0,  0,  0,  1],
++    ], dtype=np.float64)
++    glb.apply_transform(rot)
++    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
++    glb.export(output_path)
++
++
++def export_textured_glb(mesh, pipeline, resolution: int, output_path: str) -> None:
++    try:
++        import o_voxel
++    except ImportError:
++        export_textured_glb_fallback(mesh, pipeline, output_path)
++        return
++
++    texture_size = int(os.environ.get("PIXAL3D_TEXTURE_SIZE", "4096"))
++    decimation_target = int(os.environ.get("PIXAL3D_DECIMATION_TARGET", "1000000"))
++    backend = getattr(o_voxel.postprocess, "_BACKEND", "unknown")
++    has_gpu_deps = getattr(o_voxel.postprocess, "_HAS_GPU_DEPS", False)
++    print(
++        "[Texture] Using o_voxel.postprocess "
++        f"(backend={backend}, gpu_deps={has_gpu_deps}, texture_size={texture_size}, "
++        f"decimation_target={decimation_target})."
++    )
++    glb = o_voxel.postprocess.to_glb(
++        vertices=mesh.vertices, faces=mesh.faces, attr_volume=mesh.attrs,
++        coords=mesh.coords, attr_layout=pipeline.pbr_attr_layout,
++        grid_size=resolution, aabb=[[-0.5, -0.5, -0.5], [0.5, 0.5, 0.5]],
++        decimation_target=decimation_target, texture_size=texture_size,
++        remesh=True, remesh_band=1, remesh_project=0, use_tqdm=True,
++    )
++
++    rot = np.array([
++        [-1,  0,  0,  0],
++        [ 0,  0, -1,  0],
++        [ 0, -1,  0,  0],
++        [ 0,  0,  0,  1],
++    ], dtype=np.float64)
++    glb.apply_transform(rot)
++    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
++    glb.export(output_path, extension_webp=True)
++
++
++def export_textured_glb_fallback(mesh, pipeline, output_path: str, texture_size: int = 1024) -> None:
++    import trimesh
++    from PIL import Image
++    from trimesh.visual.material import SimpleMaterial
++    from trimesh.visual.texture import TextureVisuals
++
++    vertices = mesh.vertices.detach().cpu().numpy()
++    faces = mesh.faces.detach().cpu().numpy()
++    colors, match_fraction = sample_vertex_base_colors(mesh, pipeline)
++    texture, uv = build_vertex_color_texture(vertices, colors, texture_size=texture_size)
++
++    glb = trimesh.Trimesh(vertices=vertices, faces=faces, process=False)
++    image = Image.fromarray(texture, mode="RGB")
++    glb.visual = TextureVisuals(
++        uv=uv,
++        image=image,
++        material=SimpleMaterial(image=image),
++    )
++    rot = np.array([
++        [-1,  0,  0,  0],
++        [ 0,  0, -1,  0],
++        [ 0, -1,  0,  0],
++        [ 0,  0,  0,  1],
++    ], dtype=np.float64)
++    glb.apply_transform(rot)
++    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
++    glb.export(output_path)
++    print(
++        "[Texture] o_voxel unavailable; wrote trimesh UV texture fallback "
++        f"(voxel color match {match_fraction:.1%})."
++    )
++
++
++def sample_vertex_base_colors(mesh, pipeline) -> tuple[np.ndarray, float]:
++    vertices = mesh.vertices.detach().cpu().numpy().astype(np.float32)
++    attrs = mesh.attrs.detach().cpu().numpy().astype(np.float32)
++    coords = mesh.coords.detach().cpu().numpy().astype(np.int64)
++    layout = getattr(mesh, "layout", None) or pipeline.pbr_attr_layout
++    base_color_slice = layout.get("base_color", slice(0, 3))
++    default_color = np.array([0.72, 0.72, 0.72], dtype=np.float32)
++    colors = np.tile(default_color, (vertices.shape[0], 1))
++
++    if attrs.size == 0 or coords.size == 0:
++        return np.clip(colors, 0.0, 1.0), 0.0
++
++    attr_colors = np.clip(attrs[:, base_color_slice], 0.0, 1.0)
++    origin = mesh.origin.detach().cpu().numpy().astype(np.float32)
++    continuous = (vertices - origin) / float(mesh.voxel_size)
++    max_coord = int(max(coords.max(initial=0), np.ceil(continuous).max(initial=0))) + 2
++    max_coord = max(max_coord, 2)
++
++    coord_hash = _coord_hash(coords, max_coord)
++    order = np.argsort(coord_hash)
++    sorted_hash = coord_hash[order]
++    matched = np.zeros(vertices.shape[0], dtype=bool)
++
++    def apply_lookup(query_coords: np.ndarray) -> None:
++        nonlocal matched
++        missing = np.flatnonzero(~matched)
++        if len(missing) == 0:
++            return
++        query = np.clip(query_coords[missing], 0, max_coord - 1).astype(np.int64)
++        query_hash = _coord_hash(query, max_coord)
++        pos = np.searchsorted(sorted_hash, query_hash)
++        in_bounds = pos < sorted_hash.shape[0]
++        valid = np.zeros_like(in_bounds, dtype=bool)
++        if np.any(in_bounds):
++            valid[in_bounds] = sorted_hash[pos[in_bounds]] == query_hash[in_bounds]
++        if not np.any(valid):
++            return
++        vertex_ids = missing[valid]
++        colors[vertex_ids] = attr_colors[order[pos[valid]]]
++        matched[vertex_ids] = True
++
++    apply_lookup(np.rint(continuous).astype(np.int64))
++    floor_coords = np.floor(continuous).astype(np.int64)
++    for dx in (0, 1):
++        for dy in (0, 1):
++            for dz in (0, 1):
++                apply_lookup(floor_coords + np.array([dx, dy, dz], dtype=np.int64))
++
++    return np.clip(colors, 0.0, 1.0), float(matched.mean()) if len(matched) else 0.0
++
++
++def _coord_hash(coords: np.ndarray, base: int) -> np.ndarray:
++    coords = coords.astype(np.int64, copy=False)
++    return coords[:, 0] * base * base + coords[:, 1] * base + coords[:, 2]
++
++
++def build_vertex_color_texture(
++    vertices: np.ndarray,
++    colors: np.ndarray,
++    texture_size: int = 1024,
++) -> tuple[np.ndarray, np.ndarray]:
++    centered = vertices - (vertices.min(axis=0) + vertices.max(axis=0)) / 2
++    radius = np.linalg.norm(centered[:, [0, 2]], axis=1)
++    u = (np.arctan2(centered[:, 2], centered[:, 0]) / (2 * np.pi) + 0.5) % 1.0
++    y_min = centered[:, 1].min()
++    y_span = max(float(centered[:, 1].max() - y_min), 1e-6)
++    v = np.clip((centered[:, 1] - y_min) / y_span, 0.0, 1.0)
++    uv = np.stack([u, v], axis=1).astype(np.float32)
++
++    texture = np.full((texture_size, texture_size, 3), 184, dtype=np.uint8)
++    px = np.clip((uv[:, 0] * (texture_size - 1)).astype(np.int32), 0, texture_size - 1)
++    py = np.clip(((1.0 - uv[:, 1]) * (texture_size - 1)).astype(np.int32), 0, texture_size - 1)
++    order = np.argsort(radius)
++    texture[py[order], px[order]] = np.clip(colors[order, :3] * 255, 0, 255).astype(np.uint8)
++    return texture, uv
++
+ # ============================================================================
+ # Main Inference
+ # ============================================================================
+@@ -182,9 +346,15 @@ def run_inference(
+     manual_fov: float = -1.0,
+     low_vram: bool = False,
+     resolution: int = -1,
++    device: str | None = None,
++    texture: bool = True,
+ ):
++    device = resolve_device(device)
++    output_dir = os.path.dirname(os.path.abspath(output_path))
++    os.makedirs(output_dir, exist_ok=True)
++
+     # Load models
+-    pipeline = init_pipeline(model_path, low_vram=low_vram)
++    pipeline = init_pipeline(model_path, device=device, low_vram=low_vram)
+ 
+     # Preprocess image first — rembg loads to GPU for this call, then offloads.
+     # MoGe is loaded afterwards so both never occupy VRAM at the same time.
+@@ -193,7 +363,7 @@ def run_inference(
+     image_preprocessed = pipeline.preprocess_image(img)
+ 
+     # Save preprocessed image for MoGe
+-    tmp_path = os.path.join(os.path.dirname(os.path.abspath(output_path)), f"_tmp_preprocessed_{int(time.time()*1000)}.png")
++    tmp_path = os.path.join(output_dir, f"_tmp_preprocessed_{int(time.time()*1000)}.png")
+     image_preprocessed.save(tmp_path)
+ 
+     # Camera estimation
+@@ -210,10 +380,10 @@ def run_inference(
+         print(f"[Inference] Using manual FOV: {math.degrees(manual_fov):.2f}° ({manual_fov:.4f} rad), distance={distance:.4f}")
+     else:
+         print("[MoGe-2] Loading model for camera estimation...")
+-        moge_model = load_moge_model(device="cuda")
++        moge_model = load_moge_model(device=device)
+         print("[Inference] Estimating camera parameters...")
+         camera_params = get_camera_params_wild_moge(
+-            tmp_path, moge_model, device="cuda",
++            tmp_path, moge_model, device=device,
+             mesh_scale=mesh_scale, extend_pixel=extend_pixel,
+             image_resolution=image_resolution,
+         )
+@@ -221,7 +391,7 @@ def run_inference(
+         # MoGe is only needed for camera estimation; free its VRAM for inference.
+         moge_model.cpu()
+         del moge_model
+-        torch.cuda.empty_cache()
++        empty_device_cache(device)
+     os.remove(tmp_path)
+ 
+     # Run pipeline
+@@ -254,32 +424,18 @@ def run_inference(
+         return_latent=True,
+         pipeline_type=pipeline_type,
+         max_num_tokens=max_num_tokens,
++        texture=texture,
+     )
+ 
+     mesh = mesh_list[0]
+ 
+-    # Extract GLB
+-    print("[Inference] Extracting GLB...")
+-    glb = o_voxel.postprocess.to_glb(
+-        vertices=mesh.vertices, faces=mesh.faces, attr_volume=mesh.attrs,
+-        coords=mesh.coords, attr_layout=pipeline.pbr_attr_layout,
+-        grid_size=res, aabb=[[-0.5, -0.5, -0.5], [0.5, 0.5, 0.5]],
+-        decimation_target=1000000, texture_size=4096,
+-        remesh=True, remesh_band=1, remesh_project=0, use_tqdm=True,
+-    )
+-
+-    # Apply rotation
+-    rot = np.array([
+-        [-1,  0,  0,  0],
+-        [ 0,  0, -1,  0],
+-        [ 0, -1,  0,  0],
+-        [ 0,  0,  0,  1],
+-    ], dtype=np.float64)
+-    glb.apply_transform(rot)
+-
+-    # Export
+-    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+-    glb.export(output_path, extension_webp=True)
++    # Export GLB
++    if texture:
++        print("[Inference] Extracting textured GLB...")
++        export_textured_glb(mesh, pipeline, res, output_path)
++    else:
++        print("[Inference] Exporting geometry-only GLB...")
++        export_geometry_glb(mesh, output_path)
+     print(f"[Done] GLB saved to: {output_path}")
+ 
+ 
+@@ -298,6 +454,18 @@ if __name__ == "__main__":
+                              "Reduces peak VRAM from ~18GB to ~10-12GB at the cost of slower inference.")
+     parser.add_argument("--resolution", type=int, default=-1,
+                         help="Pipeline resolution (1024 or 1536). Default: 1024 if --low_vram, else 1536.")
++    parser.add_argument("--device", type=str, default=None,
++                        help="Inference device. Default: mps if available, else cuda if available, else cpu.")
++    parser.add_argument("--no_texture", action="store_true",
++                        help="Skip texture SLat sampling/decoding and export a geometry-only GLB.")
++    parser.add_argument("--ss_steps", type=int, default=12,
++                        help="Sparse-structure sampler steps.")
++    parser.add_argument("--shape_steps", type=int, default=12,
++                        help="Shape SLat sampler steps.")
++    parser.add_argument("--tex_steps", type=int, default=12,
++                        help="Texture SLat sampler steps.")
++    parser.add_argument("--max_num_tokens", type=int, default=49152,
++                        help="Maximum sparse tokens for high-resolution shape stage.")
+ 
+     args = parser.parse_args()
+ 
+@@ -309,4 +477,10 @@ if __name__ == "__main__":
+         model_path=args.model_path,
+         low_vram=args.low_vram,
+         resolution=args.resolution,
++        device=args.device,
++        texture=not args.no_texture,
++        ss_sampling_steps=args.ss_steps,
++        shape_slat_sampling_steps=args.shape_steps,
++        tex_slat_sampling_steps=args.tex_steps,
++        max_num_tokens=args.max_num_tokens,
+     )
+diff --git a/natten/__init__.py b/natten/__init__.py
+new file mode 100644
+index 0000000..948cb16
+--- /dev/null
++++ b/natten/__init__.py
+@@ -0,0 +1,17 @@
++from natten_mps import na2d as _na2d
++
++
++def na2d(query, key, value, kernel_size, dilation=1, stride=1, backend=None, **kwargs):
++    """Compatibility wrapper for recent NATTEN API calls used by NAF."""
++    return _na2d(
++        query,
++        key,
++        value,
++        kernel_size=kernel_size,
++        dilation=dilation,
++        stride=stride,
++        **kwargs,
++    )
++
++
++__all__ = ["na2d"]
+diff --git a/natten/functional.py b/natten/functional.py
+new file mode 100644
+index 0000000..3ca9cf0
+--- /dev/null
++++ b/natten/functional.py
+@@ -0,0 +1,20 @@
++from natten_mps import na2d_av as _na2d_av
++from natten_mps import na2d_qk as _na2d_qk
++
++
++def na2d_qk(query, key, kernel_size, dilation=1, **kwargs):
++    """Compatibility wrapper for legacy NATTEN [B, heads, H, W, dim] tensors."""
++    query = query.permute(0, 2, 3, 1, 4).contiguous()
++    key = key.permute(0, 2, 3, 1, 4).contiguous()
++    out = _na2d_qk(query, key, kernel_size=kernel_size, dilation=dilation, **kwargs)
++    return out.permute(0, 3, 1, 2, 4).contiguous()
++
++
++def na2d_av(attn, value, kernel_size, dilation=1, **kwargs):
++    """Compatibility wrapper for legacy NATTEN [B, heads, H, W, *] tensors."""
++    attn = attn.permute(0, 2, 3, 1, 4).contiguous()
++    value = value.permute(0, 2, 3, 1, 4).contiguous()
++    out = _na2d_av(attn, value, kernel_size=kernel_size, dilation=dilation, **kwargs)
++    return out.permute(0, 3, 1, 2, 4).contiguous()
++
++__all__ = ["na2d_av", "na2d_qk"]
+diff --git a/pixal3d/models/sc_vaes/fdg_vae.py b/pixal3d/models/sc_vaes/fdg_vae.py
+index 0209e69..aaa0381 100644
+--- a/pixal3d/models/sc_vaes/fdg_vae.py
++++ b/pixal3d/models/sc_vaes/fdg_vae.py
+@@ -1,4 +1,6 @@
+ from typing import *
++import json
++import os
+ import torch
+ import torch.nn as nn
+ import torch.nn.functional as F
+@@ -17,7 +19,66 @@ from .sparse_unet_vae import (
+     SparseUnetVaeDecoder,
+ )
+ from ...representations import Mesh
+-from o_voxel.convert import flexible_dual_grid_to_mesh
++if os.environ.get("PIXAL3D_MESH_CONVERT_BACKEND", "python") == "o_voxel":
++    try:
++        from o_voxel.convert import flexible_dual_grid_to_mesh
++    except (ImportError, RuntimeError):
++        from ...utils.mesh_extract import flexible_dual_grid_to_mesh
++else:
++    from ...utils.mesh_extract import flexible_dual_grid_to_mesh
++
++
++def _debug_stats(tensor: torch.Tensor) -> Dict[str, Any]:
++    if tensor.numel() == 0:
++        return {"shape": list(tensor.shape), "numel": 0, "dtype": str(tensor.dtype), "device": str(tensor.device)}
++    data = tensor.detach().float()
++    finite = torch.isfinite(data)
++    finite_data = data[finite]
++    stats = {
++        "shape": list(tensor.shape),
++        "numel": int(tensor.numel()),
++        "dtype": str(tensor.dtype),
++        "device": str(tensor.device),
++        "nan_count": int(torch.isnan(data).sum().item()),
++        "inf_count": int(torch.isinf(data).sum().item()),
++    }
++    if finite_data.numel() > 0:
++        stats.update({
++            "min": float(finite_data.min().item()),
++            "max": float(finite_data.max().item()),
++            "mean": float(finite_data.mean().item()),
++            "std": float(finite_data.std(unbiased=False).item()),
++        })
++    return stats
++
++
++def _debug_dump_decoded(h, vertices, intersected_logits, quad_lerp) -> None:
++    path = os.environ.get("PIXAL3D_DEBUG_ARTIFACT_DIR")
++    if not path:
++        return
++    os.makedirs(path, exist_ok=True)
++    payload = {
++        "stage": "fdg_decoder",
++        "name": "decoded_h",
++        "coords": _debug_stats(h.coords),
++        "raw_feats": _debug_stats(h.feats),
++        "vertices": _debug_stats(vertices.feats),
++        "intersected_logits": _debug_stats(intersected_logits.feats),
++        "quad_lerp": _debug_stats(quad_lerp.feats),
++        "intersected_positive_fraction": float((intersected_logits.feats > 0).float().mean().item()),
++    }
++    with open(os.path.join(path, "tensor_summaries.jsonl"), "a", encoding="utf-8") as f:
++        f.write(json.dumps(payload, sort_keys=True) + "\n")
++    torch.save(
++        {
++            "coords": h.coords.detach().cpu(),
++            "raw_feats": h.feats.detach().cpu(),
++            "vertices": vertices.feats.detach().cpu(),
++            "intersected_logits": intersected_logits.feats.detach().cpu(),
++            "quad_lerp": quad_lerp.feats.detach().cpu(),
++        },
++        os.path.join(path, "fdg_decoder.pt"),
++    )
+ 
+ 
+ class FlexiDualGridVaeEncoder(SparseUnetVaeEncoder):
+@@ -99,7 +160,9 @@ class FlexiDualGridVaeDecoder(SparseUnetVaeDecoder):
+             h = out_list[0]
+             vertices = h.replace((1 + 2 * self.voxel_margin) * F.sigmoid(h.feats[..., 0:3]) - self.voxel_margin)
+             intersected = h.replace(h.feats[..., 3:6] > 0)
++            intersected_logits = h.replace(h.feats[..., 3:6])
+             quad_lerp = h.replace(F.softplus(h.feats[..., 6:7]))
++            _debug_dump_decoded(h, vertices, intersected_logits, quad_lerp)
+             mesh = [Mesh(*flexible_dual_grid_to_mesh(
+                 v.coords[:, 1:], v.feats, i.feats, q.feats,
+                 aabb=[[-0.5, -0.5, -0.5], [0.5, 0.5, 0.5]],
+diff --git a/pixal3d/models/sc_vaes/sparse_unet_vae.py b/pixal3d/models/sc_vaes/sparse_unet_vae.py
+index b9902a1..305046c 100644
+--- a/pixal3d/models/sc_vaes/sparse_unet_vae.py
++++ b/pixal3d/models/sc_vaes/sparse_unet_vae.py
+@@ -1,4 +1,7 @@
+ from typing import *
++import gc
++import os
++import resource
+ import torch
+ import torch.nn as nn
+ import torch.nn.functional as F
+@@ -8,6 +11,51 @@ from ...modules import sparse as sp
+ from ...modules.norm import LayerNorm32
+ 
+ 
++def _decoder_progress(label: str, tensor: sp.SparseTensor) -> None:
++    if os.environ.get("PIXAL3D_DECODER_PROGRESS") != "1":
++        return
++    rss_mb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
++    if rss_mb > 10_000_000:
++        rss_mb = rss_mb / (1024 * 1024)
++    elif rss_mb > 10_000:
++        rss_mb = rss_mb / 1024
++    print(
++        f"[decoder] {label}: coords={tuple(tensor.coords.shape)} feats={tuple(tensor.feats.shape)} "
++        f"dtype={tensor.feats.dtype} device={tensor.feats.device} maxrss_mb={rss_mb:.1f}",
++        flush=True,
++    )
++
++
++def _decoder_maybe_empty_cache() -> None:
++    if os.environ.get("PIXAL3D_DECODER_EMPTY_CACHE") != "1":
++        return
++    gc.collect()
++    if torch.backends.mps.is_available():
++        try:
++            torch.mps.empty_cache()
++        except Exception:
++            pass
++
++
++def _decoder_maybe_cpu_offload(module: nn.Module, tensor: sp.SparseTensor) -> sp.SparseTensor:
++    threshold = int(os.environ.get("PIXAL3D_DECODER_CPU_OFFLOAD_THRESHOLD", "0") or "0")
++    if threshold <= 0 or tensor.feats.device.type == "cpu" or tensor.coords.shape[0] < threshold:
++        return tensor
++    print(
++        f"[decoder] cpu_offload: coords={tuple(tensor.coords.shape)} threshold={threshold}",
++        flush=True,
++    )
++    module.cpu()
++    tensor = tensor.cpu()
++    gc.collect()
++    if torch.backends.mps.is_available():
++        try:
++            torch.mps.empty_cache()
++        except Exception:
++            pass
++    return tensor
++
++
+ class SparseResBlock3d(nn.Module):
+     def __init__(
+         self,
+@@ -284,7 +332,12 @@ class SparseConvNeXtBlock3d(nn.Module):
+     def _forward(self, x: sp.SparseTensor) -> sp.SparseTensor:
+         h = self.conv(x)
+         h = h.replace(self.norm(h.feats))
+-        h = h.replace(self.mlp(h.feats))
++        mlp_chunk_size = int(os.environ.get("PIXAL3D_SPARSE_MLP_CHUNK", "0") or "0")
++        if mlp_chunk_size > 0 and h.feats.shape[0] > mlp_chunk_size:
++            mlp_out = torch.cat([self.mlp(chunk) for chunk in h.feats.split(mlp_chunk_size, dim=0)], dim=0)
++        else:
++            mlp_out = self.mlp(h.feats)
++        h = h.replace(mlp_out)
+         return h + x
+     
+     def forward(self, x: sp.SparseTensor) -> sp.SparseTensor:
+@@ -481,23 +534,36 @@ class SparseUnetVaeDecoder(nn.Module):
+         
+         h = self.from_latent(x)
+         h = h.type(self.dtype)
++        _decoder_progress("from_latent", h)
+         subs_gt = []
+         subs = []
+         for i, res in enumerate(self.blocks):
+             for j, block in enumerate(res):
++                _decoder_progress(f"before block {i}.{j} {block.__class__.__name__}", h)
+                 if i < len(self.blocks) - 1 and j == len(res) - 1:
+                     if self.pred_subdiv:
+                         if self.training:
+                             subs_gt.append(h.get_spatial_cache('subdivision'))
+                         h, sub = block(h)
++                        _decoder_maybe_empty_cache()
++                        h = _decoder_maybe_cpu_offload(self, h)
++                        _decoder_progress(f"after block {i}.{j} {block.__class__.__name__}", h)
+                         subs.append(sub)
+                     else:
+                         h = block(h, subdiv=guide_subs[i] if guide_subs is not None else None)
++                        _decoder_maybe_empty_cache()
++                        h = _decoder_maybe_cpu_offload(self, h)
++                        _decoder_progress(f"after block {i}.{j} {block.__class__.__name__}", h)
+                 else:
+                     h = block(h)
++                    _decoder_maybe_empty_cache()
++                    h = _decoder_maybe_cpu_offload(self, h)
++                    _decoder_progress(f"after block {i}.{j} {block.__class__.__name__}", h)
+         h = h.type(x.dtype)
+         h = h.replace(F.layer_norm(h.feats, h.feats.shape[-1:]))
++        _decoder_progress("after layer_norm", h)
+         h = self.output_layer(h)
++        _decoder_progress("after output_layer", h)
+         if self.training and self.pred_subdiv:
+             return h, subs_gt, subs
+         else:
+@@ -519,4 +585,4 @@ class SparseUnetVaeDecoder(nn.Module):
+                     h, sub = block(h)
+                 else:
+                     h = block(h)
+-       
+\ No newline at end of file
++       
+diff --git a/pixal3d/modules/sparse/basic.py b/pixal3d/modules/sparse/basic.py
+index 880973b..85e553d 100644
+--- a/pixal3d/modules/sparse/basic.py
++++ b/pixal3d/modules/sparse/basic.py
+@@ -14,6 +14,39 @@ __all__ = [
+ ]
+ 
+ 
++def _segment_reduce_varlen(values: torch.Tensor, reduce: str, lengths: torch.Tensor) -> torch.Tensor:
++    if values.device.type != 'mps':
++        return torch.segment_reduce(values, reduce=reduce, lengths=lengths)
++
++    outputs = []
++    start = 0
++    trailing_shape = values.shape[1:]
++    for length in lengths.detach().cpu().tolist():
++        length = int(length)
++        chunk = values.narrow(0, start, length)
++        start += length
++        if length == 0:
++            if reduce == 'sum':
++                outputs.append(values.new_zeros(trailing_shape))
++            elif reduce == 'prod':
++                outputs.append(values.new_ones(trailing_shape))
++            elif reduce == 'mean':
++                outputs.append(values.new_full(trailing_shape, float('nan')))
++            else:
++                raise ValueError(f"Unsupported reduce operation: {reduce}")
++        elif reduce == 'mean':
++            outputs.append(chunk.mean(dim=0))
++        elif reduce == 'sum':
++            outputs.append(chunk.sum(dim=0))
++        elif reduce == 'prod':
++            outputs.append(chunk.prod(dim=0))
++        else:
++            raise ValueError(f"Unsupported reduce operation: {reduce}")
++    if not outputs:
++        return values.new_empty((0, *trailing_shape))
++    return torch.stack(outputs, dim=0)
++
++
+ class VarLenTensor:
+     """
+     Sequential tensor with variable length.
+@@ -280,7 +313,7 @@ class VarLenTensor:
+         if dim is None or 0 in dim:
+             return red
+         
+-        red = torch.segment_reduce(red, reduce=op, lengths=self.seqlen)
++        red = _segment_reduce_varlen(red, reduce=op, lengths=self.seqlen)
+         return red
+     
+     def mean(self, dim: Optional[Union[int, Tuple[int,...]]] = None, keepdim: bool = False) -> torch.Tensor:
+diff --git a/pixal3d/modules/sparse/conv/conv_none.py b/pixal3d/modules/sparse/conv/conv_none.py
+new file mode 100644
+index 0000000..3a1dc8e
+--- /dev/null
++++ b/pixal3d/modules/sparse/conv/conv_none.py
+@@ -0,0 +1,209 @@
++"""
++Pure PyTorch sparse 3D convolution backend.
++
++This backend implements the same submanifold convolution contract as the
++flex_gemm backend, but avoids CUDA extensions. It is intended as the portable
++Apple Silicon fallback; performance is expected to be much slower than fused
++CUDA/Metal kernels.
++"""
++
++import hashlib
++import math
++import os
++
++import numpy as np
++import torch
++import torch.nn as nn
++
++from .. import SparseTensor
++
++
++def _coords_hash_index(coords_cpu: torch.Tensor, dilation: tuple[int, int, int]):
++    coords_np = coords_cpu.numpy().astype(np.int64, copy=False)
++    margin = max(dilation) + 1
++    mins = coords_np.min(axis=0)
++    maxs = coords_np.max(axis=0)
++    shift = -mins + margin
++    dims = (maxs - mins) + (2 * margin + 1)
++
++    def make_keys(offset=(0, 0, 0)):
++        b = coords_np[:, 0] + shift[0]
++        z = coords_np[:, 1] + offset[0] + shift[1]
++        y = coords_np[:, 2] + offset[1] + shift[2]
++        x = coords_np[:, 3] + offset[2] + shift[3]
++        return (((b * dims[1] + z) * dims[2] + y) * dims[3] + x).astype(np.int64, copy=False)
++
++    keys = make_keys()
++    order = np.argsort(keys, kind="mergesort")
++    if keys.shape[0] > 1:
++        sorted_keys_for_dupes = keys[order]
++        if np.any(sorted_keys_for_dupes[1:] == sorted_keys_for_dupes[:-1]):
++            raise ValueError("Duplicate sparse coordinate is not supported by conv_none")
++    return coords_np, make_keys, keys[order], order
++
++
++def sparse_conv3d_init(self, in_channels, out_channels, kernel_size, stride=1, dilation=1, padding=None, bias=True, indice_key=None):
++    assert stride == 1 and (padding is None), \
++        "Pure PyTorch backend only supports submanifold sparse convolution (stride=1, padding=None)"
++
++    self.in_channels = in_channels
++    self.out_channels = out_channels
++    self.kernel_size = tuple(kernel_size) if isinstance(kernel_size, (list, tuple)) else (kernel_size,) * 3
++    self.stride = tuple(stride) if isinstance(stride, (list, tuple)) else (stride,) * 3
++    self.dilation = tuple(dilation) if isinstance(dilation, (list, tuple)) else (dilation,) * 3
++
++    self.weight = nn.Parameter(torch.empty((out_channels, in_channels, *self.kernel_size)))
++    if bias:
++        self.bias = nn.Parameter(torch.empty(out_channels))
++    else:
++        self.register_parameter("bias", None)
++
++    torch.nn.init.kaiming_uniform_(self.weight, a=math.sqrt(5))
++    if self.bias is not None:
++        fan_in, _ = torch.nn.init._calculate_fan_in_and_fan_out(self.weight)
++        if fan_in != 0:
++            bound = 1 / math.sqrt(fan_in)
++            torch.nn.init.uniform_(self.bias, -bound, bound)
++
++    # Match flex_gemm layout: (Co, Ci, Kd, Kh, Kw) -> (Co, Kd, Kh, Kw, Ci).
++    self.weight = nn.Parameter(self.weight.permute(0, 2, 3, 4, 1).contiguous())
++
++
++def sparse_conv3d_forward(self, x: SparseTensor) -> SparseTensor:
++    Co, Kd, Kh, Kw, Ci = self.weight.shape
++    device = x.feats.device
++    dtype = x.feats.dtype
++
++    coords = x.coords
++    feats = x.feats
++    num_voxels = coords.shape[0]
++    if num_voxels == 0:
++        out = torch.zeros(0, Co, device=device, dtype=dtype)
++        if self.bias is not None:
++            out = out + self.bias
++        return x.replace(out)
++    stream_threshold = int(os.environ.get("PIXAL3D_CONV_NONE_STREAM_THRESHOLD", "0") or "0")
++    stream_edges = os.environ.get("PIXAL3D_CONV_NONE_STREAM", "0") == "1" or (
++        stream_threshold > 0 and num_voxels >= stream_threshold
++    )
++
++    cache_key = f"SubMConv3d_none_neighbor_cache_{Kw}x{Kh}x{Kd}_dilation{self.dilation}"
++    coords_cpu = coords.detach().cpu().contiguous()
++    coords_signature = (
++        tuple(coords_cpu.shape),
++        hashlib.sha1(coords_cpu.numpy().tobytes()).hexdigest(),
++    )
++    cached = None if stream_edges else x.get_spatial_cache(cache_key)
++    neighbor_cache = None
++    if cached is not None and cached[0] == coords_signature:
++        neighbor_cache = cached[1]
++
++    if neighbor_cache is None and not stream_edges:
++        coord_to_idx = {}
++        for idx in range(num_voxels):
++            key = tuple(coords_cpu[idx].tolist())
++            if key in coord_to_idx:
++                raise ValueError(f"Duplicate sparse coordinate is not supported by conv_none: {key}")
++            coord_to_idx[key] = idx
++
++        dz, dy, dx = self.dilation
++        src_indices = []
++        tgt_indices = []
++        kernel_indices = []
++
++        for kz in range(Kd):
++            for ky in range(Kh):
++                for kx in range(Kw):
++                    oz = (kz - Kd // 2) * dz
++                    oy = (ky - Kh // 2) * dy
++                    ox = (kx - Kw // 2) * dx
++                    kernel_idx = kz * Kh * Kw + ky * Kw + kx
++
++                    for tgt_idx in range(num_voxels):
++                        b, z, y, x_coord = coords_cpu[tgt_idx].tolist()
++                        src_key = (b, z + oz, y + oy, x_coord + ox)
++                        src_idx = coord_to_idx.get(src_key)
++                        if src_idx is not None:
++                            src_indices.append(src_idx)
++                            tgt_indices.append(tgt_idx)
++                            kernel_indices.append(kernel_idx)
++
++        neighbor_cache = (
++            torch.tensor(src_indices, dtype=torch.long, device=device),
++            torch.tensor(tgt_indices, dtype=torch.long, device=device),
++            torch.tensor(kernel_indices, dtype=torch.long, device=device),
++        )
++        x.register_spatial_cache(cache_key, (coords_signature, neighbor_cache))
++
++    kernel_count = Kd * Kh * Kw
++    weight = self.weight.reshape(Co, kernel_count, Ci).permute(1, 2, 0)
++
++    out = torch.zeros(num_voxels, Co, device=device, dtype=dtype)
++    edge_chunk_size = int(os.environ.get("PIXAL3D_CONV_NONE_EDGE_CHUNK", "0") or "0")
++
++    if stream_edges:
++        index_key = f"SubMConv3d_none_hash_index_dilation{self.dilation}"
++        index_cached = x.get_spatial_cache(index_key)
++        if index_cached is not None and index_cached[0] == coords_signature:
++            coords_np, make_keys, sorted_keys, sorted_order = index_cached[1]
++        else:
++            coords_np, make_keys, sorted_keys, sorted_order = _coords_hash_index(coords_cpu, self.dilation)
++            x.register_spatial_cache(index_key, (coords_signature, (coords_np, make_keys, sorted_keys, sorted_order)))
++
++        dz, dy, dx = self.dilation
++        for kz in range(Kd):
++            for ky in range(Kh):
++                for kx in range(Kw):
++                    oz = (kz - Kd // 2) * dz
++                    oy = (ky - Kh // 2) * dy
++                    ox = (kx - Kw // 2) * dx
++                    k = kz * Kh * Kw + ky * Kw + kx
++
++                    neighbor_keys = make_keys((oz, oy, ox))
++                    pos = np.searchsorted(sorted_keys, neighbor_keys)
++                    in_range = pos < sorted_keys.shape[0]
++                    found = np.zeros(neighbor_keys.shape[0], dtype=bool)
++                    found[in_range] = sorted_keys[pos[in_range]] == neighbor_keys[in_range]
++                    if not found.any():
++                        continue
++                    edge_tgt_np = np.nonzero(found)[0].astype(np.int64, copy=False)
++                    edge_src_np = sorted_order[pos[found]].astype(np.int64, copy=False)
++                    edge_src = torch.from_numpy(edge_src_np).to(device=device)
++                    edge_tgt = torch.from_numpy(edge_tgt_np).to(device=device)
++                    if edge_chunk_size > 0 and edge_src.numel() > edge_chunk_size:
++                        for start in range(0, edge_src.numel(), edge_chunk_size):
++                            stop = min(start + edge_chunk_size, edge_src.numel())
++                            edge_out = feats[edge_src[start:stop]] @ weight[k]
++                            out.index_add_(0, edge_tgt[start:stop], edge_out)
++                    else:
++                        edge_out = feats[edge_src] @ weight[k]
++                        out.index_add_(0, edge_tgt, edge_out)
++    else:
++        src_idx, tgt_idx, kernel_idx = neighbor_cache
++        for k in range(kernel_count):
++            mask = kernel_idx == k
++            if not torch.any(mask):
++                continue
++            edge_src = src_idx[mask]
++            edge_tgt = tgt_idx[mask]
++            if edge_chunk_size > 0 and edge_src.numel() > edge_chunk_size:
++                for start in range(0, edge_src.numel(), edge_chunk_size):
++                    stop = min(start + edge_chunk_size, edge_src.numel())
++                    edge_out = feats[edge_src[start:stop]] @ weight[k]
++                    out.index_add_(0, edge_tgt[start:stop], edge_out)
++            else:
++                edge_out = feats[edge_src] @ weight[k]
++                out.index_add_(0, edge_tgt, edge_out)
++
++    if self.bias is not None:
++        out = out + self.bias
++
++    return x.replace(out)
++
++
++def sparse_inverse_conv3d_init(self, *args, **kwargs):
++    raise NotImplementedError("SparseInverseConv3d with conv_none is not implemented")
++
++
++def sparse_inverse_conv3d_forward(self, x: SparseTensor) -> SparseTensor:
++    raise NotImplementedError("SparseInverseConv3d with conv_none is not implemented")
+diff --git a/pixal3d/pipelines/pixal3d_image_to_3d.py b/pixal3d/pipelines/pixal3d_image_to_3d.py
+index 7129482..86a02f2 100644
+--- a/pixal3d/pipelines/pixal3d_image_to_3d.py
++++ b/pixal3d/pipelines/pixal3d_image_to_3d.py
+@@ -1,4 +1,6 @@
+ from typing import *
++import json
++import os
+ import torch
+ import torch.nn as nn
+ import numpy as np
+@@ -8,6 +10,111 @@ from . import samplers, rembg
+ from ..modules.sparse import SparseTensor
+ from ..modules import image_feature_extractor
+ from ..representations import Mesh, MeshWithVoxel
++from ..utils.device import empty_device_cache, synchronize_device
++
++
++def _debug_dir() -> Optional[str]:
++    path = os.environ.get("PIXAL3D_DEBUG_ARTIFACT_DIR")
++    if not path:
++        return None
++    os.makedirs(path, exist_ok=True)
++    return path
++
++
++def _as_float_stats(tensor: torch.Tensor) -> Dict[str, Any]:
++    if tensor.numel() == 0:
++        return {
++            "shape": list(tensor.shape),
++            "dtype": str(tensor.dtype),
++            "device": str(tensor.device),
++            "numel": 0,
++        }
++    data = tensor.detach().float()
++    finite = torch.isfinite(data)
++    finite_data = data[finite]
++    stats = {
++        "shape": list(tensor.shape),
++        "dtype": str(tensor.dtype),
++        "device": str(tensor.device),
++        "numel": int(tensor.numel()),
++        "nan_count": int(torch.isnan(data).sum().item()),
++        "inf_count": int(torch.isinf(data).sum().item()),
++        "zero_fraction": float((data == 0).float().mean().item()),
++    }
++    if finite_data.numel() > 0:
++        stats.update({
++            "min": float(finite_data.min().item()),
++            "max": float(finite_data.max().item()),
++            "mean": float(finite_data.mean().item()),
++            "std": float(finite_data.std(unbiased=False).item()),
++        })
++    return stats
++
++
++def _debug_write(stage: str, payload: Dict[str, Any]) -> None:
++    path = _debug_dir()
++    if path is None:
++        return
++    with open(os.path.join(path, "tensor_summaries.jsonl"), "a", encoding="utf-8") as f:
++        f.write(json.dumps({"stage": stage, **payload}, sort_keys=True) + "\n")
++
++
++def _debug_tensor(stage: str, name: str, tensor: torch.Tensor) -> None:
++    _debug_write(stage, {"name": name, "tensor": _as_float_stats(tensor)})
++
++
++def _debug_sparse(stage: str, name: str, sparse: SparseTensor) -> None:
++    payload = {
++        "name": name,
++        "type": "SparseTensor",
++        "feats": _as_float_stats(sparse.feats),
++        "coords": _as_float_stats(sparse.coords),
++    }
++    if sparse.coords.numel() > 0:
++        coords = sparse.coords.detach().cpu()
++        payload["coord_min"] = coords.min(dim=0).values.tolist()
++        payload["coord_max"] = coords.max(dim=0).values.tolist()
++        payload["coord_count"] = int(coords.shape[0])
++    _debug_write(stage, payload)
++
++
++def _debug_save_sparse(stage: str, name: str, sparse: SparseTensor) -> None:
++    if os.environ.get("PIXAL3D_DEBUG_SAVE_SPARSE") != "1":
++        return
++    path = _debug_dir()
++    if path is None:
++        return
++    torch.save(
++        {
++            "stage": stage,
++            "name": name,
++            "coords": sparse.coords.detach().cpu(),
++            "feats": sparse.feats.detach().cpu(),
++        },
++        os.path.join(path, f"{stage}_{name}.pt"),
++    )
++
++
++def _debug_coords(stage: str, name: str, coords: torch.Tensor) -> None:
++    _debug_tensor(stage, name, coords)
++    path = _debug_dir()
++    if path is None:
++        return
++    np.savez_compressed(
++        os.path.join(path, f"{stage}_{name}.npz"),
++        coords=coords.detach().cpu().numpy(),
++    )
++
++
++def _debug_cond(stage: str, cond: Dict[str, Any]) -> None:
++    for prefix in ("cond", "neg_cond"):
++        branch = cond.get(prefix, {})
++        for name, value in branch.items():
++            full_name = f"{prefix}.{name}"
++            if isinstance(value, SparseTensor):
++                _debug_sparse(stage, full_name, value)
++            elif isinstance(value, torch.Tensor):
++                _debug_tensor(stage, full_name, value)
+ 
+ 
+ class Pixal3DImageTo3DPipeline(Pipeline):
+@@ -120,7 +227,10 @@ class Pixal3DImageTo3DPipeline(Pipeline):
+         pipeline.image_cond_model_shape_1024 = None
+         pipeline.image_cond_model_tex_1024 = None
+ 
+-        pipeline.rembg_model = getattr(rembg, args['rembg_model']['name'])(**args['rembg_model']['args'])
++        if os.environ.get("PIXAL3D_SKIP_REMBG_LOAD") == "1":
++            pipeline.rembg_model = None
++        else:
++            pipeline.rembg_model = getattr(rembg, args['rembg_model']['name'])(**args['rembg_model']['args'])
+         
+         pipeline.low_vram = args.get('low_vram', True)
+         pipeline.default_pipeline_type = args.get('default_pipeline_type', '1024_cascade')
+@@ -486,6 +596,7 @@ class Pixal3DImageTo3DPipeline(Pipeline):
+         self,
+         slat: SparseTensor,
+         resolution: int,
++        return_subs: bool = True,
+     ) -> Tuple[List[Mesh], List[SparseTensor]]:
+         """
+         Decode the structured latent.
+@@ -501,7 +612,7 @@ class Pixal3DImageTo3DPipeline(Pipeline):
+         if self.low_vram:
+             self.models['shape_slat_decoder'].to(self.device)
+             self.models['shape_slat_decoder'].low_vram = True
+-        ret = self.models['shape_slat_decoder'](slat, return_subs=True)
++        ret = self.models['shape_slat_decoder'](slat, return_subs=return_subs)
+         if self.low_vram:
+             self.models['shape_slat_decoder'].cpu()
+             self.models['shape_slat_decoder'].low_vram = False
+@@ -589,7 +700,7 @@ class Pixal3DImageTo3DPipeline(Pipeline):
+         meshes, subs = self.decode_shape_slat(shape_slat, resolution)
+         tex_voxels = self.decode_tex_slat(tex_slat, subs)
+         out_mesh = []
+-        torch.cuda.synchronize()
++        synchronize_device(self.device)
+         for m, v in zip(meshes, tex_voxels):
+             m.fill_holes()
+             out_mesh.append(
+@@ -619,6 +730,7 @@ class Pixal3DImageTo3DPipeline(Pipeline):
+         return_latent: bool = False,
+         pipeline_type: Optional[str] = None,
+         max_num_tokens: int = 49152,
++        texture: bool = True,
+     ) -> List[MeshWithVoxel]:
+         """
+         Run the Pixal3D pipeline (proj mode, cascade).
+@@ -638,18 +750,22 @@ class Pixal3DImageTo3DPipeline(Pipeline):
+             return_latent (bool): Whether to return the latent codes.
+             pipeline_type (str): The type of the pipeline. Options: '1024_cascade', '1536_cascade'.
+             max_num_tokens (int): The maximum number of tokens to use.
++            texture (bool): Whether to sample/decode texture voxels. When False,
++                returns geometry-only Mesh objects after shape decode.
+         """
+         # Check pipeline type
+         pipeline_type = pipeline_type or self.default_pipeline_type
+         if pipeline_type == '1024_cascade':
+             assert 'shape_slat_flow_model_512' in self.models, "No 512 resolution shape SLat flow model found."
+             assert 'shape_slat_flow_model_1024' in self.models, "No 1024 resolution shape SLat flow model found."
+-            assert 'tex_slat_flow_model_1024' in self.models, "No 1024 resolution texture SLat flow model found."
++            if texture:
++                assert 'tex_slat_flow_model_1024' in self.models, "No 1024 resolution texture SLat flow model found."
+             hr_resolution = 1024
+         elif pipeline_type == '1536_cascade':
+             assert 'shape_slat_flow_model_512' in self.models, "No 512 resolution shape SLat flow model found."
+             assert 'shape_slat_flow_model_1024' in self.models, "No 1024 resolution shape SLat flow model found."
+-            assert 'tex_slat_flow_model_1024' in self.models, "No 1024 resolution texture SLat flow model found."
++            if texture:
++                assert 'tex_slat_flow_model_1024' in self.models, "No 1024 resolution texture SLat flow model found."
+             hr_resolution = 1536
+         else:
+             raise ValueError(f"Invalid pipeline type for Pixal3D proj mode: {pipeline_type}. "
+@@ -659,7 +775,8 @@ class Pixal3DImageTo3DPipeline(Pipeline):
+         assert self.image_cond_model_ss is not None, "image_cond_model_ss not set."
+         assert self.image_cond_model_shape_512 is not None, "image_cond_model_shape_512 not set."
+         assert self.image_cond_model_shape_1024 is not None, "image_cond_model_shape_1024 not set."
+-        assert self.image_cond_model_tex_1024 is not None, "image_cond_model_tex_1024 not set."
++        if texture:
++            assert self.image_cond_model_tex_1024 is not None, "image_cond_model_tex_1024 not set."
+ 
+         # Extract camera params
+         camera_angle_x = camera_params['camera_angle_x']
+@@ -677,13 +794,15 @@ class Pixal3DImageTo3DPipeline(Pipeline):
+             distance=distance,
+             mesh_scale=mesh_scale,
+         )
++        _debug_cond("stage1_sparse_structure_cond", cond_ss)
+         ss_res = 32
+         coords = self.sample_sparse_structure(
+             cond_ss, ss_res,
+             num_samples, sparse_structure_sampler_params
+         )
++        _debug_coords("stage1_sparse_structure", "coords", coords)
+         del cond_ss
+-        torch.cuda.empty_cache()
++        empty_device_cache(self.device)
+ 
+         # ---- Stage 2: Shape LR 512 (proj) ----
+         cond_shape_lr = self.get_proj_cond_shape(
+@@ -692,18 +811,48 @@ class Pixal3DImageTo3DPipeline(Pipeline):
+             distance=distance,
+             mesh_scale=mesh_scale,
+         )
++        _debug_cond("stage2_shape_lr_cond", cond_shape_lr)
+         lr_slat = self.sample_shape_slat(
+             cond_shape_lr, self.models['shape_slat_flow_model_512'],
+             coords, shape_slat_sampler_params
+         )
++        _debug_sparse("stage2_shape_lr", "lr_slat", lr_slat)
++        _debug_save_sparse("stage2_shape_lr", "lr_slat", lr_slat)
+         del cond_shape_lr
+-        torch.cuda.empty_cache()
++        empty_device_cache(self.device)
++
++        if os.environ.get("PIXAL3D_LR_ONLY_DECODE") == "1":
++            _debug_write("stage2_shape_lr", {
++                "name": "lr_only_decode",
++                "resolution": 512,
++                "texture_requested": bool(texture),
++            })
++            out_mesh, _subs = self.decode_shape_slat(lr_slat, 512)
++            for idx, sub in enumerate(_subs):
++                _debug_sparse("stage5_decode_lr_only", f"subdivision_{idx}", sub)
++            for idx, mesh in enumerate(out_mesh):
++                mesh_payload = {
++                    "name": f"mesh_{idx}",
++                    "vertices": _as_float_stats(mesh.vertices),
++                    "faces": _as_float_stats(mesh.faces),
++                }
++                if mesh.vertices.numel() > 0:
++                    vertices = mesh.vertices.detach().cpu()
++                    mesh_payload["bounds"] = [
++                        vertices.min(dim=0).values.tolist(),
++                        vertices.max(dim=0).values.tolist(),
++                    ]
++                _debug_write("stage5_decode_lr_only", mesh_payload)
++            if return_latent:
++                return out_mesh, (lr_slat, None, 512)
++            return out_mesh
+ 
+         # ---- Stage 3a: Upsample LR → HR ----
+         if self.low_vram:
+             self.models['shape_slat_decoder'].to(self.device)
+             self.models['shape_slat_decoder'].low_vram = True
+         hr_coords = self.models['shape_slat_decoder'].upsample(lr_slat, upsample_times=4)
++        _debug_coords("stage3a_upsample", "hr_coords_raw", hr_coords)
+         if self.low_vram:
+             self.models['shape_slat_decoder'].cpu()
+             self.models['shape_slat_decoder'].low_vram = False
+@@ -723,8 +872,16 @@ class Pixal3DImageTo3DPipeline(Pipeline):
+             actual_hr_resolution -= 128
+ 
+         actual_grid_res = actual_hr_resolution // 16
++        _debug_coords("stage3a_upsample", "hr_coords_unique", hr_coords_unique)
++        _debug_write("stage3a_upsample", {
++            "name": "resolution_selection",
++            "actual_hr_resolution": int(actual_hr_resolution),
++            "actual_grid_res": int(actual_grid_res),
++            "num_tokens": int(num_tokens),
++            "max_num_tokens": int(max_num_tokens),
++        })
+         del lr_slat, hr_coords, quant_coords
+-        torch.cuda.empty_cache()
++        empty_device_cache(self.device)
+ 
+         # ---- Stage 3b: Shape HR (proj) ----
+         cond_shape_hr = self.get_proj_cond_shape(
+@@ -734,10 +891,12 @@ class Pixal3DImageTo3DPipeline(Pipeline):
+             mesh_scale=mesh_scale,
+             grid_resolution_override=actual_grid_res,
+         )
++        _debug_cond("stage3b_shape_hr_cond", cond_shape_hr)
+         noise_hr = SparseTensor(
+             feats=torch.randn(hr_coords_unique.shape[0], self.models['shape_slat_flow_model_1024'].in_channels).to(self.device),
+             coords=hr_coords_unique,
+         )
++        _debug_sparse("stage3b_shape_hr", "noise_hr", noise_hr)
+         sampler_params_hr = {**self.shape_slat_sampler_params, **shape_slat_sampler_params}
+         flow_model_hr = self.models['shape_slat_flow_model_1024']
+         if self.low_vram:
+@@ -755,28 +914,54 @@ class Pixal3DImageTo3DPipeline(Pipeline):
+         std = torch.tensor(self.shape_slat_normalization['std'])[None].to(hr_slat.device)
+         mean = torch.tensor(self.shape_slat_normalization['mean'])[None].to(hr_slat.device)
+         shape_slat = hr_slat * std + mean
++        _debug_sparse("stage3b_shape_hr", "hr_slat_normalized", hr_slat)
++        _debug_sparse("stage3b_shape_hr", "shape_slat_denormalized", shape_slat)
++        _debug_save_sparse("stage3b_shape_hr", "shape_slat_denormalized", shape_slat)
+         del cond_shape_hr, noise_hr, hr_slat, hr_coords_unique
+-        torch.cuda.empty_cache()
++        empty_device_cache(self.device)
+ 
+         # ---- Stage 4: Texture (proj) ----
+         tex_grid_res = actual_hr_resolution // 16
+-        cond_tex = self.get_proj_cond_shape(
+-            self.image_cond_model_tex_1024, [image], shape_slat.coords,
+-            camera_angle_x=camera_angle_x,
+-            distance=distance,
+-            mesh_scale=mesh_scale,
+-            grid_resolution_override=tex_grid_res,
+-        )
+-        tex_slat = self.sample_tex_slat(
+-            cond_tex, self.models['tex_slat_flow_model_1024'],
+-            shape_slat, tex_slat_sampler_params
+-        )
+-        del cond_tex
+-        torch.cuda.empty_cache()
++        if texture:
++            cond_tex = self.get_proj_cond_shape(
++                self.image_cond_model_tex_1024, [image], shape_slat.coords,
++                camera_angle_x=camera_angle_x,
++                distance=distance,
++                mesh_scale=mesh_scale,
++                grid_resolution_override=tex_grid_res,
++            )
++            _debug_cond("stage4_texture_cond", cond_tex)
++            tex_slat = self.sample_tex_slat(
++                cond_tex, self.models['tex_slat_flow_model_1024'],
++                shape_slat, tex_slat_sampler_params
++            )
++            _debug_sparse("stage4_texture", "tex_slat", tex_slat)
++            del cond_tex
++            empty_device_cache(self.device)
++        else:
++            tex_slat = None
+ 
+         # ---- Stage 5: Decode ----
+         res = actual_hr_resolution
+-        out_mesh = self.decode_latent(shape_slat, tex_slat, res)
++        if texture:
++            out_mesh = self.decode_latent(shape_slat, tex_slat, res)
++        else:
++            out_mesh, _subs = self.decode_shape_slat(shape_slat, res)
++            for idx, sub in enumerate(_subs):
++                _debug_sparse("stage5_decode", f"subdivision_{idx}", sub)
++        for idx, mesh in enumerate(out_mesh):
++            mesh_payload = {
++                "name": f"mesh_{idx}",
++                "vertices": _as_float_stats(mesh.vertices),
++                "faces": _as_float_stats(mesh.faces),
++            }
++            if mesh.vertices.numel() > 0:
++                vertices = mesh.vertices.detach().cpu()
++                mesh_payload["bounds"] = [
++                    vertices.min(dim=0).values.tolist(),
++                    vertices.max(dim=0).values.tolist(),
++                ]
++            _debug_write("stage5_decode", mesh_payload)
+         if return_latent:
+             return out_mesh, (shape_slat, tex_slat, res)
+         else:
+diff --git a/pixal3d/pipelines/rembg/BiRefNet.py b/pixal3d/pipelines/rembg/BiRefNet.py
+index c71a992..82b5e3f 100644
+--- a/pixal3d/pipelines/rembg/BiRefNet.py
++++ b/pixal3d/pipelines/rembg/BiRefNet.py
+@@ -7,10 +7,9 @@ from PIL import Image
+ 
+ class BiRefNet:
+     def __init__(self, model_name: str = "ZhengPeng7/BiRefNet"):
+-        self.model = AutoModelForImageSegmentation.from_pretrained(
+-            model_name, trust_remote_code=True
+-        )
+-        self.model.eval()
++        self.model_name = model_name
++        self.model = None
++        self.device = torch.device("cpu")
+         self.transform_image = transforms.Compose(
+             [
+                 transforms.Resize((1024, 1024)),
+@@ -18,19 +17,30 @@ class BiRefNet:
+                 transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+             ]
+         )
++
++    def _ensure_loaded(self):
++        if self.model is None:
++            self.model = AutoModelForImageSegmentation.from_pretrained(
++                self.model_name, trust_remote_code=True
++            )
++            self.model.eval()
++            self.model.to(self.device)
+     
+     def to(self, device: str):
+-        self.model.to(device)
++        self.device = torch.device(device)
++        if self.model is not None:
++            self.model.to(self.device)
+ 
+     def cuda(self):
+-        self.model.cuda()
++        self.to("cuda")
+ 
+     def cpu(self):
+-        self.model.cpu()
++        self.to("cpu")
+         
+     def __call__(self, image: Image.Image) -> Image.Image:
++        self._ensure_loaded()
+         image_size = image.size
+-        input_images = self.transform_image(image).unsqueeze(0).to("cuda")
++        input_images = self.transform_image(image).unsqueeze(0).to(self.device)
+         # Prediction
+         with torch.no_grad():
+             preds = self.model(input_images)[-1].sigmoid().cpu()
+@@ -39,4 +49,4 @@ class BiRefNet:
+         mask = pred_pil.resize(image_size)
+         image.putalpha(mask)
+         return image
+-    
+\ No newline at end of file
++    
+diff --git a/pixal3d/representations/mesh/base.py b/pixal3d/representations/mesh/base.py
+index 6bdb47f..e9ee01a 100644
+--- a/pixal3d/representations/mesh/base.py
++++ b/pixal3d/representations/mesh/base.py
+@@ -1,8 +1,14 @@
+ from typing import *
+ import torch
+ from ..voxel import Voxel
+-import cumesh
+-from flex_gemm.ops.grid_sample import grid_sample_3d
++try:
++    import cumesh
++except ImportError:
++    cumesh = None
++try:
++    from flex_gemm.ops.grid_sample import grid_sample_3d
++except (ImportError, RuntimeError):
++    grid_sample_3d = None
+ 
+ 
+ class Mesh:
+@@ -33,6 +39,8 @@ class Mesh:
+         return self.to('cpu')
+     
+     def fill_holes(self, max_hole_perimeter=3e-2):
++        if cumesh is None:
++            return
+         vertices = self.vertices.clone().cuda().contiguous()
+         faces = self.faces.clone().cuda().contiguous()
+         
+@@ -57,6 +65,9 @@ class Mesh:
+         self.faces = new_faces.to(self.device)
+         
+     def remove_faces(self, face_mask: torch.Tensor):
++        if cumesh is None:
++            self.faces = self.faces[~face_mask.to(self.faces.device)]
++            return
+         vertices = self.vertices.clone().cuda().contiguous()
+         faces = self.faces.clone().cuda().contiguous()
+         
+@@ -69,6 +80,8 @@ class Mesh:
+         self.faces = new_faces.to(self.device)
+         
+     def simplify(self, target=1000000, verbose: bool=False, options: dict={}):
++        if cumesh is None:
++            return
+         vertices = self.vertices.clone().cuda().contiguous()
+         faces = self.faces.clone().cuda().contiguous()
+         
+@@ -220,6 +233,8 @@ class MeshWithVoxel(Mesh, Voxel):
+         )
+         
+     def query_attrs(self, xyz):
++        if grid_sample_3d is None:
++            raise RuntimeError("grid_sample_3d backend is unavailable; install flex_gemm/mtlgemm or use a fallback path")
+         grid = ((xyz - self.origin) / self.voxel_size).reshape(1, -1, 3)
+         vertex_attrs = grid_sample_3d(
+             self.attrs,
+diff --git a/pixal3d/trainers/flow_matching/mixins/image_conditioned_proj.py b/pixal3d/trainers/flow_matching/mixins/image_conditioned_proj.py
+index ccafe87..2cca370 100644
+--- a/pixal3d/trainers/flow_matching/mixins/image_conditioned_proj.py
++++ b/pixal3d/trainers/flow_matching/mixins/image_conditioned_proj.py
+@@ -18,6 +18,7 @@ from PIL import Image, ImageDraw
+ import torch.distributed as dist
+ from ....utils import dist_utils
+ from ....utils.dist_utils import read_file_dist
++from ....utils.projection import grid_sample_2d
+ 
+ 
+ # =============================================================================
+@@ -127,7 +128,7 @@ def sample_features(fmap: torch.Tensor, queries_ndc: torch.Tensor) -> torch.Tens
+     grid = queries_ndc.view(B, K, 1, 2)  # (B, K, 1, 2)
+ 
+     # Bilinear interpolation, align_corners=False (consistent with [-1,1] pixel center convention)
+-    feat = F.grid_sample(
++    feat = grid_sample_2d(
+         fmap, grid, mode='bilinear',
+         align_corners=False, padding_mode='border'  # border avoids out-of-bound becoming 0
+     )  # (B, C, K, 1)
+@@ -337,6 +338,54 @@ class ProjGrid(nn.Module):
+         return vis_images
+ 
+ 
++class InterpolatedNAFUpsampler(nn.Module):
++    """Shape-compatible NAF substitute for Mac geometry smoke tests."""
++
++    backend_name = "interpolate"
++
++    def forward(
++        self,
++        guide: torch.Tensor,
++        lr_features: torch.Tensor,
++        target_size: Union[int, Tuple[int, int], List[int]],
++    ) -> torch.Tensor:
++        if isinstance(target_size, int):
++            size = (target_size, target_size)
++        else:
++            size = tuple(target_size)
++        return F.interpolate(lr_features, size=size, mode="bilinear", align_corners=False)
++
++
++def _naf_error_supports_interpolation_fallback(exc: BaseException) -> bool:
++    message = str(exc).lower()
++    return isinstance(exc, (ImportError, ModuleNotFoundError)) and "natten" in message
++
++
++def _extract_dinov3_hidden_states(model: nn.Module, image: torch.Tensor) -> torch.Tensor:
++    image = image.to(model.embeddings.patch_embeddings.weight.dtype)
++    hidden_states = model.embeddings(image, bool_masked_pos=None)
++    position_embeddings = model.rope_embeddings(image)
++
++    layers = getattr(model, "layer", None)
++    if layers is None and hasattr(model, "model"):
++        layers = getattr(model.model, "layer", None)
++    if layers is None:
++        outputs = model(pixel_values=image)
++        return outputs.last_hidden_state
++
++    for layer_module in layers:
++        hidden_states = layer_module(
++            hidden_states,
++            position_embeddings=position_embeddings,
++        )
++        if isinstance(hidden_states, tuple):
++            hidden_states = hidden_states[0]
++
++    if hasattr(model, "norm"):
++        return model.norm(hidden_states)
++    return F.layer_norm(hidden_states, hidden_states.shape[-1:])
++
++
+ # =============================================================================
+ # DINOv3 Feature Extractor with Projection
+ # =============================================================================
+@@ -404,6 +453,7 @@ class DinoV3ProjFeatureExtractor(nn.Module):
+         
+         # NAF upsampler (frozen, no trainable params)
+         self.naf_model = None  # Lazy-loaded on first use to avoid import if not needed
++        self.naf_backend = os.environ.get("PIXAL3D_NAF_BACKEND", "auto").strip().lower()
+         
+         # proj_channels: the output dimension of proj features
+         # Without NAF: embed_dim (e.g. 1024)
+@@ -414,14 +464,36 @@ class DinoV3ProjFeatureExtractor(nn.Module):
+     
+     def _load_naf(self):
+         """Lazy-load pretrained NAF model."""
+-        if self.naf_model is None:
+-            import torch.hub
+-            device = next(self.model.parameters()).device
++        if self.naf_model is not None:
++            return
++
++        backend = self.naf_backend
++        if backend in {"interpolate", "bilinear"}:
++            self.naf_model = InterpolatedNAFUpsampler()
++            print("[NAF] Using interpolation fallback backend; this is not CUDA/NAF-equivalent.")
++            return
++        if backend not in {"auto", "torch_hub", "native"}:
++            raise ValueError(
++                "PIXAL3D_NAF_BACKEND must be one of auto, torch_hub, native, interpolate, or bilinear"
++            )
++
++        import torch.hub
++        device = next(self.model.parameters()).device
++        try:
+             self.naf_model = torch.hub.load(
+                 "valeoai/NAF", "naf", pretrained=True, device=device, trust_repo=True
+             )
+-            self.naf_model.eval()
+-            self.naf_model.requires_grad_(False)
++        except (ImportError, ModuleNotFoundError) as exc:
++            if backend == "auto" and _naf_error_supports_interpolation_fallback(exc):
++                self.naf_model = InterpolatedNAFUpsampler()
++                print(
++                    "[NAF] natten is unavailable; using interpolation fallback backend. "
++                    "Set PIXAL3D_NAF_BACKEND=torch_hub to require native NAF."
++                )
++            else:
++                raise
++        self.naf_model.eval()
++        self.naf_model.requires_grad_(False)
+         
+     def to(self, device):
+         super().to(device)
+@@ -449,17 +521,7 @@ class DinoV3ProjFeatureExtractor(nn.Module):
+     
+     def extract_features(self, image: torch.Tensor) -> torch.Tensor:
+         """Extract features using DINOv3."""
+-        image = image.to(self.model.embeddings.patch_embeddings.weight.dtype)
+-        hidden_states = self.model.embeddings(image, bool_masked_pos=None)
+-        position_embeddings = self.model.rope_embeddings(image)
+-
+-        for layer_module in self.model.layer:
+-            hidden_states = layer_module(
+-                hidden_states,
+-                position_embeddings=position_embeddings,
+-            )
+-
+-        return F.layer_norm(hidden_states, hidden_states.shape[-1:])
++        return _extract_dinov3_hidden_states(self.model, image)
+     
+     def forward(
+         self,
+@@ -493,7 +555,7 @@ class DinoV3ProjFeatureExtractor(nn.Module):
+             image = [i.resize((self.image_size, self.image_size), Image.LANCZOS) for i in image]
+             image = [np.array(i.convert('RGB')).astype(np.float32) / 255 for i in image]
+             image = [torch.from_numpy(i).permute(2, 0, 1).float() for i in image]
+-            image = torch.stack(image).cuda()
++            image = torch.stack(image).to(next(self.model.parameters()).device)
+         else:
+             raise ValueError(f"Unsupported type of image: {type(image)}")
+         
+@@ -710,15 +772,7 @@ class DinoV3VaeProjFeatureExtractor(nn.Module):
+     
+     def _extract_dino_features(self, image: torch.Tensor) -> torch.Tensor:
+         """Extract DINOv3 features from normalized image."""
+-        image = image.to(self.dino_model.embeddings.patch_embeddings.weight.dtype)
+-        hidden_states = self.dino_model.embeddings(image, bool_masked_pos=None)
+-        position_embeddings = self.dino_model.rope_embeddings(image)
+-        for layer_module in self.dino_model.layer:
+-            hidden_states = layer_module(
+-                hidden_states,
+-                position_embeddings=position_embeddings,
+-            )
+-        return F.layer_norm(hidden_states, hidden_states.shape[-1:])
++        return _extract_dinov3_hidden_states(self.dino_model, image)
+     
+     @torch.no_grad()
+     def _extract_vae_latent(self, image: torch.Tensor) -> torch.Tensor:
+@@ -756,7 +810,7 @@ class DinoV3VaeProjFeatureExtractor(nn.Module):
+             image = [i.resize((self.image_size, self.image_size), Image.LANCZOS) for i in image]
+             image = [np.array(i.convert('RGB')).astype(np.float32) / 255 for i in image]
+             image = [torch.from_numpy(i).permute(2, 0, 1).float() for i in image]
+-            image = torch.stack(image).cuda()
++            image = torch.stack(image).to(next(self.dino_model.parameters()).device)
+         else:
+             raise ValueError(f"Unsupported type of image: {type(image)}")
+         
+diff --git a/pixal3d/utils/device.py b/pixal3d/utils/device.py
+new file mode 100644
+index 0000000..d97d071
+--- /dev/null
++++ b/pixal3d/utils/device.py
+@@ -0,0 +1,30 @@
++from __future__ import annotations
++
++import torch
++
++
++def resolve_device(device: str | torch.device | None = None) -> torch.device:
++    if device is not None:
++        return torch.device(device)
++    if torch.backends.mps.is_available():
++        return torch.device("mps")
++    if torch.cuda.is_available():
++        return torch.device("cuda")
++    return torch.device("cpu")
++
++
++def empty_device_cache(device: str | torch.device | None = None) -> None:
++    resolved = resolve_device(device)
++    if resolved.type == "cuda" and torch.cuda.is_available():
++        torch.cuda.empty_cache()
++    elif resolved.type == "mps" and hasattr(torch, "mps"):
++        torch.mps.empty_cache()
++
++
++def synchronize_device(device: str | torch.device | None = None) -> None:
++    resolved = resolve_device(device)
++    if resolved.type == "cuda" and torch.cuda.is_available():
++        torch.cuda.synchronize()
++    elif resolved.type == "mps" and hasattr(torch, "mps"):
++        torch.mps.synchronize()
++
+diff --git a/pixal3d/utils/mesh_extract.py b/pixal3d/utils/mesh_extract.py
+new file mode 100644
+index 0000000..363fc6f
+--- /dev/null
++++ b/pixal3d/utils/mesh_extract.py
+@@ -0,0 +1,127 @@
++from __future__ import annotations
++
++from typing import Union
++
++import torch
++
++
++def mesh_to_flexible_dual_grid(*args, **kwargs):
++    raise RuntimeError("mesh_to_flexible_dual_grid requires o_voxel and is not part of the Mac inference fallback")
++
++
++def _tensor(value, *, dtype, device):
++    if isinstance(value, torch.Tensor):
++        return value.to(device=device, dtype=dtype)
++    return torch.tensor(value, dtype=dtype, device=device)
++
++
++def flexible_dual_grid_to_mesh(
++    coords: torch.Tensor,
++    dual_vertices: torch.Tensor,
++    intersected_flag: torch.Tensor,
++    split_weight: Union[torch.Tensor, None],
++    aabb,
++    voxel_size=None,
++    grid_size=None,
++    train: bool = False,
++):
++    if train:
++        raise RuntimeError("Training mode is not supported by the Mac mesh extraction fallback")
++
++    device = coords.device
++    coords = coords.to(dtype=torch.long)
++    intersected_flag = intersected_flag.to(dtype=torch.bool)
++
++    if coords.numel() == 0 or dual_vertices.numel() == 0:
++        return (
++            torch.zeros(0, 3, dtype=dual_vertices.dtype, device=device),
++            torch.zeros(0, 3, dtype=torch.long, device=device),
++        )
++
++    aabb = _tensor(aabb, dtype=dual_vertices.dtype, device=device)
++    if voxel_size is not None:
++        voxel_size = _tensor(voxel_size if not isinstance(voxel_size, (int, float)) else [voxel_size] * 3, dtype=dual_vertices.dtype, device=device)
++    else:
++        if grid_size is None:
++            raise ValueError("Either voxel_size or grid_size must be provided")
++        grid_size = _tensor(grid_size if not isinstance(grid_size, int) else [grid_size] * 3, dtype=dual_vertices.dtype, device=device)
++        voxel_size = (aabb[1] - aabb[0]) / grid_size
++
++    edge_neighbor_voxel_offset = torch.tensor(
++        [
++            [[0, 0, 0], [0, 0, 1], [0, 1, 1], [0, 1, 0]],
++            [[0, 0, 0], [1, 0, 0], [1, 0, 1], [0, 0, 1]],
++            [[0, 0, 0], [0, 1, 0], [1, 1, 0], [1, 0, 0]],
++        ],
++        dtype=torch.long,
++        device=device,
++    ).unsqueeze(0)
++    quad_split_1 = torch.tensor([0, 1, 2, 0, 2, 3], dtype=torch.long, device=device)
++    quad_split_2 = torch.tensor([0, 1, 3, 3, 1, 2], dtype=torch.long, device=device)
++
++    coord_to_idx = {}
++    coords_cpu = coords.detach().cpu()
++    for idx, coord in enumerate(coords_cpu.tolist()):
++        key = tuple(coord)
++        if key in coord_to_idx:
++            raise ValueError(f"Duplicate dual-grid coordinate is not supported: {key}")
++        coord_to_idx[key] = idx
++
++    edge_neighbor_voxel = coords.reshape(coords.shape[0], 1, 1, 3) + edge_neighbor_voxel_offset
++    connected_voxel = edge_neighbor_voxel[intersected_flag]
++    if connected_voxel.numel() == 0:
++        return (
++            torch.zeros(0, 3, dtype=dual_vertices.dtype, device=device),
++            torch.zeros(0, 3, dtype=torch.long, device=device),
++        )
++
++    connected_indices = []
++    for coord in connected_voxel.detach().cpu().reshape(-1, 3).tolist():
++        connected_indices.append(coord_to_idx.get(tuple(coord), -1))
++    connected_indices = torch.tensor(connected_indices, dtype=torch.long, device=device).reshape(-1, 4)
++    quad_indices = connected_indices[(connected_indices >= 0).all(dim=1)]
++    if quad_indices.numel() == 0:
++        return (
++            torch.zeros(0, 3, dtype=dual_vertices.dtype, device=device),
++            torch.zeros(0, 3, dtype=torch.long, device=device),
++        )
++
++    mesh_vertices = (coords.to(dtype=dual_vertices.dtype) + dual_vertices) * voxel_size + aabb[0].reshape(1, 3)
++
++    if split_weight is None:
++        split_1 = quad_indices[:, quad_split_1]
++        n0 = torch.linalg.cross(
++            mesh_vertices[split_1[:, 1]] - mesh_vertices[split_1[:, 0]],
++            mesh_vertices[split_1[:, 2]] - mesh_vertices[split_1[:, 0]],
++            dim=1,
++        )
++        n1 = torch.linalg.cross(
++            mesh_vertices[split_1[:, 2]] - mesh_vertices[split_1[:, 1]],
++            mesh_vertices[split_1[:, 3]] - mesh_vertices[split_1[:, 1]],
++            dim=1,
++        )
++        align_1 = (n0 * n1).sum(dim=1, keepdim=True).abs()
++
++        split_2 = quad_indices[:, quad_split_2]
++        n0 = torch.linalg.cross(
++            mesh_vertices[split_2[:, 1]] - mesh_vertices[split_2[:, 0]],
++            mesh_vertices[split_2[:, 2]] - mesh_vertices[split_2[:, 0]],
++            dim=1,
++        )
++        n1 = torch.linalg.cross(
++            mesh_vertices[split_2[:, 2]] - mesh_vertices[split_2[:, 1]],
++            mesh_vertices[split_2[:, 3]] - mesh_vertices[split_2[:, 1]],
++            dim=1,
++        )
++        align_2 = (n0 * n1).sum(dim=1, keepdim=True).abs()
++
++        mesh_faces = torch.where(align_1 > align_2, split_1, split_2).reshape(-1, 3)
++    else:
++        split_weight = split_weight.to(device=device)
++        sw = split_weight[quad_indices]
++        sw_02 = (sw[:, 0] * sw[:, 2]).reshape(-1)
++        sw_13 = (sw[:, 1] * sw[:, 3]).reshape(-1)
++        cond = (sw_02 > sw_13).unsqueeze(1).expand(-1, 6)
++        mesh_faces = torch.where(cond, quad_indices[:, quad_split_1], quad_indices[:, quad_split_2]).reshape(-1, 3)
++
++    return mesh_vertices, mesh_faces
+diff --git a/pixal3d/utils/projection.py b/pixal3d/utils/projection.py
+new file mode 100644
+index 0000000..1d6f1e8
+--- /dev/null
++++ b/pixal3d/utils/projection.py
+@@ -0,0 +1,50 @@
++from __future__ import annotations
++
++import torch
++import torch.nn.functional as F
++
++
++def _border_clamp_grid_for_zero_padding(
++    grid: torch.Tensor,
++    height: int,
++    width: int,
++    align_corners: bool,
++) -> torch.Tensor:
++    clamped = grid.clone()
++    if align_corners:
++        x_min, x_max = -1.0, 1.0
++        y_min, y_max = -1.0, 1.0
++    else:
++        x_min, x_max = -1.0 + 1.0 / width, 1.0 - 1.0 / width
++        y_min, y_max = -1.0 + 1.0 / height, 1.0 - 1.0 / height
++    clamped[..., 0] = clamped[..., 0].clamp(x_min, x_max)
++    clamped[..., 1] = clamped[..., 1].clamp(y_min, y_max)
++    return clamped
++
++
++def grid_sample_2d(
++    input: torch.Tensor,
++    grid: torch.Tensor,
++    mode: str = "bilinear",
++    padding_mode: str = "zeros",
++    align_corners: bool = False,
++) -> torch.Tensor:
++    if input.ndim != 4:
++        raise ValueError(f"expected 4D input [N,C,H,W], got shape {tuple(input.shape)}")
++    if grid.ndim != 4 or grid.shape[-1] != 2:
++        raise ValueError(f"expected 4D grid [N,H_out,W_out,2], got shape {tuple(grid.shape)}")
++    if mode not in {"bilinear", "nearest"}:
++        raise ValueError(f"unsupported mode for compatibility wrapper: {mode}")
++
++    if padding_mode == "border":
++        _, _, height, width = input.shape
++        grid = _border_clamp_grid_for_zero_padding(grid, height, width, align_corners)
++        padding_mode = "zeros"
++
++    return F.grid_sample(
++        input,
++        grid,
++        mode=mode,
++        padding_mode=padding_mode,
++        align_corners=align_corners,
++    )

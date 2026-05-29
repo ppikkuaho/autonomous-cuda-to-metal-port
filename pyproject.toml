@@ -1,0 +1,8 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+  "milestone(name): milestone covered by the test",
+  "requires_pixal3d: requires Pixal3D import/load work",
+  "requires_backend: requires a ported subsystem backend",
+]
+

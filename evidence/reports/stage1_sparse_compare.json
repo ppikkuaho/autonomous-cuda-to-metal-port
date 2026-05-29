@@ -1,0 +1,56 @@
+{
+  "aligned_tensors": {},
+  "coordinate_overlap": {
+    "jaccard": 0.9882037533512065,
+    "left_coverage": 0.9935309973045822,
+    "left_only_count": 24,
+    "right_coverage": 0.9946033459255261,
+    "right_only_count": 20,
+    "shared_count": 3686,
+    "union_count": 3730
+  },
+  "left": {
+    "coords": {
+      "count": 3710,
+      "dims": 4,
+      "max": [
+        0,
+        31,
+        30,
+        27
+      ],
+      "min": [
+        0,
+        1,
+        2,
+        0
+      ]
+    },
+    "name": null,
+    "stage": null,
+    "tensors": {}
+  },
+  "left_path": "artifacts/runs/m13_cuda_reference_robot_9_12step/debug/stage1_sparse_structure_coords.npz",
+  "right": {
+    "coords": {
+      "count": 3706,
+      "dims": 4,
+      "max": [
+        0,
+        31,
+        30,
+        27
+      ],
+      "min": [
+        0,
+        1,
+        2,
+        0
+      ]
+    },
+    "name": null,
+    "stage": null,
+    "tensors": {}
+  },
+  "right_path": "artifacts/runs/m14_mac_robot_9_12step_geometry/debug/stage1_sparse_structure_coords.npz"
+}

@@ -1,0 +1,84 @@
+{
+  "comparisons": [
+    {
+      "name": "vertex_count",
+      "relative_delta": 0.09922016158863575,
+      "status": "PASS"
+    },
+    {
+      "name": "face_count",
+      "relative_delta": 0.09782722195193451,
+      "status": "PASS"
+    },
+    {
+      "name": "bbox_extent",
+      "relative_deltas": [
+        0.00304606556892395,
+        0.01024162769317627,
+        0.003261387348175049
+      ],
+      "status": "PASS"
+    }
+  ],
+  "left": {
+    "bounds": [
+      [
+        [
+          -0.4686737656593323,
+          -0.35845762491226196,
+          -0.45407551527023315
+        ],
+        [
+          0.45852649211883545,
+          0.4664168953895569,
+          0.405830442905426
+        ]
+      ]
+    ],
+    "checks": [],
+    "errors": [],
+    "exists": true,
+    "face_count": 2585722,
+    "material_count": 0,
+    "path": "artifacts/runs/m13_cuda_reference_robot_9_12step/outputs/output.glb",
+    "size_bytes": 48450004,
+    "status": "PASS",
+    "texture_visual_count": 0,
+    "vertex_count": 1451711,
+    "warnings": []
+  },
+  "left_path": "artifacts/runs/m13_cuda_reference_robot_9_12step/outputs/output.glb",
+  "right": {
+    "bounds": [
+      [
+        [
+          -0.4677475094795227,
+          -0.35567593574523926,
+          -0.45629531145095825
+        ],
+        [
+          0.45640668272972107,
+          0.47944021224975586,
+          0.406872034072876
+        ]
+      ]
+    ],
+    "checks": [],
+    "errors": [],
+    "exists": true,
+    "face_count": 2332768,
+    "material_count": 0,
+    "path": "artifacts/runs/m14_mac_robot_9_12step_geometry/outputs/output.glb",
+    "size_bytes": 43686092,
+    "status": "PASS",
+    "texture_visual_count": 0,
+    "vertex_count": 1307672,
+    "warnings": []
+  },
+  "right_path": "artifacts/runs/m14_mac_robot_9_12step_geometry/outputs/output.glb",
+  "status": "PASS",
+  "thresholds": {
+    "count_rtol": 0.15,
+    "extent_rtol": 0.05
+  }
+}

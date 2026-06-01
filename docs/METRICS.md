@@ -217,8 +217,8 @@ Interpretation:
 
 - A diagnostic is not a fidelity gate until controls calibrate it. The same
   thresholds that accept the integrated native candidate reject these planted
-  defects, which is what makes the final pass load-bearing for the frozen
-  target.
+  defects, which is what gives the final pass its evidential weight for the
+  frozen target.
 
 ### Human Texture Review
 

@@ -1,7 +1,7 @@
 # Reproducibility
 
 This document records the minimum commands and artifacts needed to reproduce the
-geometry claim, and notes honestly what the texture path additionally requires.
+geometry claim, and notes what the texture path additionally requires.
 
 ## Target Hardware
 
@@ -100,8 +100,8 @@ Expected result:
 ## Texture Path And Native Remesh Toolchain
 
 The geometry command above runs with `--no_texture`. Reproducing the textured
-result has additional requirements that are documented honestly rather than
-vendored:
+result has additional requirements that are documented as dependencies and not
+vendored here:
 
 - The texture path samples and decodes texture SLat, then exports a textured
   GLB. The Mac-port texture-export Python path lives in the patched

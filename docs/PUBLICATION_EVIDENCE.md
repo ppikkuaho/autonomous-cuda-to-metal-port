@@ -3,7 +3,7 @@
 This table maps public claims to evidence, metrics, and caveats.
 
 The raw run artifacts referenced below are not redistributed (model weights and
-multi-gigabyte outputs are excluded); the load-bearing comparison reports and
+multi-gigabyte outputs are excluded); the comparison reports and
 contact sheets are included under `evidence/`, and the numbers can be
 regenerated with the harness in `scripts/`. Every public claim in the table
 below points to a file shipped in this repository or to a narrative doc under

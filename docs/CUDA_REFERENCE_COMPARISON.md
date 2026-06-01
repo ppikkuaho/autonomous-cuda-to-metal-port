@@ -29,10 +29,10 @@ existence.
 
 ## Reference framing
 
-- The CUDA audit is a check on the replacement decisions, not a proof of
+- The CUDA audit is a check on the replacement decisions. It does not establish
   general textured parity.
 - Native CUDA NAF versus the Mac interpolation fallback is documented as a
-  quality fallback, not compared as equivalent.
+  quality fallback. The two are not treated as equivalent.
 - The Mac fallback UV texture export is not scored as parity. A separate H100
   texture boundary capture and one accepted integrated native candidate are
   scored against the CUDA reference; see "Texture boundary capture" below.
@@ -105,8 +105,8 @@ them against the Mac path at the same boundaries:
 | Same-shell decoded-PBR base-color MAE | ~`0.0009` | Baking the same shell yields near-identical base color. |
 
 These captures localize the remaining texture gap to native shell/remesh,
-sampler, and topology handling rather than the neural texture field. The texture
-comparison report is published at
+sampler, and topology handling; the neural texture field is already close at the
+captured boundaries. The texture comparison report is published at
 `evidence/reports/texture_compare_m117_vs_cuda.json`.
 
 ## Texture acceptance

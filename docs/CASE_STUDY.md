@@ -9,18 +9,18 @@ and documents the agentic verification loop that made the result auditable.
 
 ## Original Idea
 
-The original idea was not "make a nice Mac app" and not "rewrite Pixal3D from scratch." It was to demonstrate a rigorous porting workflow for a modern CUDA-first 3D generation system:
+The original idea was to demonstrate a rigorous porting workflow for a modern CUDA-first 3D generation system:
 
 1. Build the verification harness before changing the model path.
 2. Port one subsystem at a time.
 3. Record artifacts for every milestone, including failures.
-4. Use CUDA only at the end as an audit/reference, not as a crutch.
-5. Publish the work as a case study in engineering judgment: scope control, evidence quality, debugging strategy, and honest claims.
+4. Use CUDA at the end as an audit/reference.
+5. Publish the work as a case study in engineering judgment: scope control, evidence quality, debugging strategy, and precise claims.
 
-That framing is still the strongest version of the project. The agentic loop that
+That framing still describes the project. The agentic loop that
 drove it is documented separately in [`../HARNESS.md`](../HARNESS.md).
 
-## Why This Was Interesting
+## Why This Was Hard
 
 Pixal3D inherits a TRELLIS.2-style stack with CUDA-oriented components for attention, sparse convolution, mesh extraction, texture baking, and postprocessing. Apple Silicon has a very different execution stack: PyTorch MPS, Metal, unified memory, no CUDA extensions, and different operator support/performance behavior.
 
@@ -112,7 +112,7 @@ The project used a layered validation strategy:
 14. Final-candidate summary and human visual review only after computational
     gates passed.
 
-This mattered because "a GLB exists" is not enough evidence for a port. The strongest evidence comes from boundary tests and same-target CUDA comparison.
+This mattered because "a GLB exists" is weak evidence for a port. Boundary tests and same-target CUDA comparison carry the evidence.
 
 ## CUDA Reference Audit
 
@@ -125,11 +125,11 @@ The CUDA audit was run on RunPod H100 using the official-style CUDA stack. Criti
 | CUDA robot 12-step textured | PASS | 899,351 | 969,613 | 1 | 1 |
 | CUDA sample auto-camera | PASS | 167,215 | 228,494 | 0 | 0 |
 
-The key role of CUDA was not to prove bitwise equality. It provided a concrete target for what the official path produces under the frozen input/config.
+The role of CUDA was to provide a concrete target for what the official path produces under the frozen input/config. It does not establish bitwise equality.
 
 ## Geometry Result
 
-The final geometry result compares the frozen robot/manual-FOV target at 12 steps. The strongest agreement is at the coarse sparse-structure stage, not the final bounding box:
+The final geometry result compares the frozen robot/manual-FOV target at 12 steps. Agreement is highest at the coarse sparse-structure stage:
 
 | Stage metric | Result |
 |---|---:|
@@ -151,11 +151,11 @@ The coarse geometry layout is nearly identical, while high-resolution latent fea
 
 ![Robot geometry comparison](../evidence/geometry-comparison-contact-sheet.png)
 
-Two control replays localize where the Mac path is exact versus divergent: meshing CUDA's own 12-step FDG tensors through the Mac Python path reproduces vertex/face counts exactly, and decoding CUDA's 4-step HR shape latents through the Mac decoder lands within sub-0.1% mesh deltas. So the Mac mesh/export path is faithful *given* CUDA neural tensors; the structural divergence is upstream in the neural decode, and the HR latent-feature cosine of ~0.52 is the honest limit — this is not full latent parity.
+Two control replays localize where the Mac path is exact versus divergent: meshing CUDA's own 12-step FDG tensors through the Mac Python path reproduces vertex/face counts exactly, and decoding CUDA's 4-step HR shape latents through the Mac decoder lands within sub-0.1% mesh deltas. So the Mac mesh/export path is faithful *given* CUDA neural tensors; the structural divergence is upstream in the neural decode, and the HR latent-feature cosine of ~0.52 marks the limit. Full latent parity is not established; high-resolution latent features diverge.
 
 ## Texture Result
 
-Texture/material parity was the long, hard final stretch, and it started from a
+Texture/material parity was the long final stretch, and it started from a
 negative result: the official dense-bake route failed locally, and a first
 KDTree/xatlas exporter changed material statistics (roughness defaulting to
 `1.0` outside sampled texels, where official Pixal3D zero-initializes and
@@ -173,7 +173,7 @@ numerically very close to CUDA at the captured boundaries:
 | Same-shell decoded-PBR base-color MAE | ~0.0009 |
 
 That localized the remaining gap to native shell/remesh, sampler, and topology
-handling rather than the neural field. The accepted result is an integrated
+handling; the neural field is already close at the captured boundaries. The accepted result is an integrated
 native candidate evaluated against the CUDA reference: it clears all 13
 final-candidate gates under a 4-million-sample parity gate stable across seeds
 42/43/44, with viewer-accurate stored-vertex normal semantics, followed by
@@ -195,13 +195,13 @@ An earlier working theory treated FDG graph fragmentation as evidence of semanti
 | CUDA 4-step robot | 257,544 | 2,571 | 7.8% |
 | CUDA 12-step robot | 1,451,711 | 5,536 | 15.7% |
 
-The lesson: **a diagnostic metric is not a fidelity gate until it has been calibrated against a reference.** Building a same-tree CUDA reference specifically to audit the Mac port — and then trusting the data over the initial theory — is the part of this work that is hardest to fake.
+The lesson: **a diagnostic metric is not a fidelity gate until it has been calibrated against a reference.** A same-tree CUDA reference was built specifically to audit the Mac port, and the comparison data superseded the initial theory.
 
-The loop also found and fixed real bugs along the way: a silent node-dropping
+The run also found and fixed real bugs along the way: a silent node-dropping
 traversal bug in a Metal BVH kernel (lifting shell-area parity vs CUDA from
 ~0.33 to ~0.99 after switching to stackless traversal), and a texture-color
 sampling bug in the MPS `grid_sample` fallback (collapsing base-color error from
-~0.169 to ~0.012). Both were only findable against the real CUDA path.
+~0.169 to ~0.012). Both surfaced through comparison against the real CUDA path.
 
 ## What Is Not Claimed
 
@@ -222,5 +222,5 @@ The next step would be full texture/style equivalence: capture the full chain of
 CUDA texture intermediates (conditioning, texture noise, texture SLat, decoder
 guides, raw and processed decoded voxels, final atlas, final GLB) in one CUDA
 session, and compare fixed-camera real-viewer renders only after the
-intermediate boundaries explain where CUDA and Mac first diverge. That is a
-reasonable follow-up, not a claim of the current work.
+intermediate boundaries explain where CUDA and Mac first diverge. That remains
+future work; the current work does not claim it.

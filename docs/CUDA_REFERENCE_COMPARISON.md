@@ -30,11 +30,12 @@ existence.
 ## Reference framing
 
 - The CUDA audit is a check on the replacement decisions, not a proof of
-  textured parity.
+  general textured parity.
 - Native CUDA NAF versus the Mac interpolation fallback is documented as a
   quality fallback, not compared as equivalent.
-- CUDA `o_voxel` texture baking versus the Mac fallback UV texture export is not
-  scored as parity.
+- The Mac fallback UV texture export is not scored as parity. A separate H100
+  texture boundary capture and one accepted integrated native candidate are
+  scored against the CUDA reference; see "Texture boundary capture" below.
 
 ## Reference runs
 
@@ -91,12 +92,46 @@ coordinate-aware sparse comparisons between the Mac and CUDA stage artifacts.
 | CUDA 12-step high-res latent decoded on the Mac neural FDG path | PARTIAL | Full dense replay hits memory/performance limits in the `conv_none` fallback decoder path; a scale limitation for replay, not an end-to-end Mac generation failure. |
 | Mac 12-step robot/manual-FOV geometry vs CUDA 12-step | PASS | Mac generated `1307672` vertices / `2332768` faces versus CUDA `1451711` / `2585722`; count deltas about `9.9%`, bbox extent deltas `0.30%`, `1.02%`, `0.33%`. |
 
+## Texture boundary capture
+
+A separate H100 capture session was run later to localize the texture path. It
+captured the texture-side intermediates from the native CUDA stack and compared
+them against the Mac path at the same boundaries:
+
+| Boundary check | Result | Interpretation |
+|---|---|---|
+| Texture SLat coordinate Jaccard / mean cosine | `1.0` / `0.999971` | The texture sparse latent support and features are effectively identical at the captured boundary. |
+| Decoded texture-voxel Jaccard / feature MAE | `0.99653` / `0.000931` | The decoded texture voxels agree to a small MAE. |
+| Same-shell decoded-PBR base-color MAE | ~`0.0009` | Baking the same shell yields near-identical base color. |
+
+These captures localize the remaining texture gap to native shell/remesh,
+sampler, and topology handling rather than the neural texture field. The texture
+comparison report is published at
+`evidence/reports/texture_compare_m117_vs_cuda.json`.
+
+## Texture acceptance
+
+One integrated native textured candidate was then evaluated against the CUDA
+reference. It clears all 13 final-candidate parity gates under a 4-million-sample
+parity gate that is stable across seeds `42`/`43`/`44`, with viewer-accurate
+stored-vertex normal semantics, followed by human visual acceptance of paired
+default/close-up/specular render sheets. The verifier summary is published at
+`evidence/reports/final_candidate_parity_summary.json` and the paired renders at
+`evidence/texture-comparison-contact-sheet.png`.
+
+This acceptance holds **only** for that exact candidate/reference pair. Earlier
+candidates explicitly failed visual parity. It is not general CUDA texture
+parity, and it is not arbitrary-input texture parity.
+
 ## Conclusion
 
 - Apple Silicon geometry generation is validated against an official CUDA
   12-step geometry reference for the frozen robot/manual-FOV target.
 - The comparison uses strict thresholds: `count_rtol=0.15`, `extent_rtol=0.05`.
-- The Mac output here is geometry-only and should be described as a structural
-  geometry result, not a styled or textured Pixal3D-quality result.
-- Texture parity remains unvalidated, because the Mac texture/export path uses
-  fallbacks while CUDA uses its native texture and cleanup components.
+- The geometry portion of the Mac output should be described as a structural
+  geometry result, not a styled Pixal3D-quality result on its own.
+- Texture/material parity is established only at the captured boundaries and for
+  one accepted integrated native candidate against one CUDA reference, under
+  metric gates plus human review. General CUDA texture parity is not claimed,
+  because the broader Mac texture/export surface still uses fallbacks while CUDA
+  uses its native texture and cleanup components.

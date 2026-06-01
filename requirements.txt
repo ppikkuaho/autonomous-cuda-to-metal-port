@@ -8,3 +8,7 @@ trimesh
 pillow
 pytest
 httpx
+# Optional: enables the CIEDE2000 deltaE metric in
+# compare_texture_surface_correspondence.py. The script degrades gracefully
+# (reports null for that one metric) when scikit-image is not installed.
+scikit-image

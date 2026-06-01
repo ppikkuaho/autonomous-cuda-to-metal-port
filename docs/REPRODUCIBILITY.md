@@ -1,6 +1,7 @@
 # Reproducibility
 
-This document records the minimum commands and artifacts needed to reproduce the geometry claim.
+This document records the minimum commands and artifacts needed to reproduce the
+geometry claim, and notes honestly what the texture path additionally requires.
 
 ## Target Hardware
 
@@ -96,6 +97,34 @@ Expected result:
 - face relative delta about `0.0978`
 - max bbox extent delta about `0.0102`
 
+## Texture Path And Native Remesh Toolchain
+
+The geometry command above runs with `--no_texture`. Reproducing the textured
+result has additional requirements that are documented honestly rather than
+vendored:
+
+- The texture path samples and decodes texture SLat, then exports a textured
+  GLB. The Mac-port texture-export Python path lives in the patched
+  `inference.py` (`export_textured_glb`, with a `trimesh` UV fallback); enabling
+  it means dropping `--no_texture`.
+- The **accepted** parity result does not come from the pure-Python fallback
+  exporter. It comes from an integrated native candidate that uses a **native
+  Metal narrow-band remesh toolchain** at the `o_voxel.postprocess.to_glb`
+  boundary (`remesh=True, remesh_band=1`). That native toolchain is **a
+  documented dependency, not vendored in this repository** — for the same reason
+  the model weights and CUDA backends are not vendored. Without it, the Mac path
+  produces a loadable textured GLB but not the accepted-candidate parity result.
+- The texture comparison report
+  (`evidence/reports/texture_compare_m117_vs_cuda.json`) can be regenerated from
+  two texture reports with `scripts/compare_texture_reports.py`
+  (`scripts/inspect_glb_textures.py` produces a per-GLB texture report). The
+  final-candidate parity-suite runner that produced
+  `evidence/reports/final_candidate_parity_summary.json` is described in
+  `docs/CUDA_REFERENCE_COMPARISON.md` and is not part of the published harness.
+
+The texture/viewer parity claim is accepted for one frozen candidate/reference
+pair only; see `docs/CLAIMS.md`.
+
 ## Minimal Public Artifact Set
 
 For a reviewer who does not need to rerun:
@@ -104,7 +133,9 @@ For a reviewer who does not need to rerun:
 - `docs/CLAIMS.md`
 - `docs/PUBLICATION_EVIDENCE.md`
 - `evidence/geometry-comparison-contact-sheet.png`
+- `evidence/texture-comparison-contact-sheet.png`
 - `evidence/reports/glb_compare_cuda12_strict.json`
+- `evidence/reports/final_candidate_parity_summary.json`
 
 ## Reproducibility Caveats
 
@@ -112,3 +143,4 @@ For a reviewer who does not need to rerun:
 - Exact runtime depends heavily on local cache state, thermal behavior, PyTorch version, and MPS behavior.
 - Raw artifacts contain absolute local paths and should be sanitized before public release.
 - CUDA reference artifacts were produced using the ported tree with native CUDA dependencies, not a pristine upstream app checkout.
+- The accepted textured result depends on the native Metal narrow-band remesh toolchain, which is a documented dependency and is not vendored here; the pure-Python texture fallback alone does not reproduce the accepted-candidate parity.

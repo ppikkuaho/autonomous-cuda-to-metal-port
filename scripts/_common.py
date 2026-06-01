@@ -86,6 +86,19 @@ def sha256_file(path: Path | str, chunk_size: int = 1024 * 1024) -> str:
     return h.hexdigest()
 
 
+def artifact_metadata(path: Path | str) -> dict[str, Any]:
+    """Stable file identity used to prove reports describe the same GLB bytes."""
+    p = Path(path)
+    stat = p.stat()
+    return {
+        "path": str(p.expanduser().resolve(strict=False)),
+        "exists": p.exists(),
+        "size_bytes": stat.st_size,
+        "mtime_ns": stat.st_mtime_ns,
+        "sha256": sha256_file(p),
+    }
+
+
 def write_json(path: Path | str, data: Any) -> None:
     path = Path(path)
     ensure_dir(path.parent)

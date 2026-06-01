@@ -1,0 +1,4315 @@
+{
+  "boundary_diagnostics": [],
+  "candidate_label": "m117_skip_cleanup_tex4096_m122_viewer_normal_final_candidate",
+  "decision_rule": "All required gates must pass before final human/GPT visual review. Attribution diagnostics explain where to fix failures; they do not by themselves prove output parity.",
+  "final_candidate_mode": true,
+  "overall_status": "PASS",
+  "provenance_verdict": {
+    "expected_candidate_path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+    "expected_reference_path": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+    "failure_count": 0,
+    "failures": [],
+    "pass_count": 219,
+    "passes": [
+      {
+        "expected": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+        "name": "material.reference_path",
+        "observed": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb"
+      },
+      {
+        "expected": "candidate path",
+        "name": "material.candidate_path.present",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": {
+          "exists": true,
+          "mtime_ns": 1780297325000000000,
+          "path": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+          "sha256": "aa3b2c93f5d82a4fe845191380663b723439d1ae2785e0d726fc4420cbb41467",
+          "size_bytes": 44732988
+        },
+        "name": "material.reference_artifact",
+        "observed": {
+          "exists": true,
+          "mtime_ns": 1780297325000000000,
+          "path": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+          "sha256": "aa3b2c93f5d82a4fe845191380663b723439d1ae2785e0d726fc4420cbb41467",
+          "size_bytes": 44732988
+        }
+      },
+      {
+        "expected": {
+          "exists": true,
+          "mtime_ns": 1780324286408382860,
+          "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+          "sha256": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd",
+          "size_bytes": 45138428
+        },
+        "name": "material.candidate_artifact",
+        "observed": {
+          "exists": true,
+          "mtime_ns": 1780324286408382860,
+          "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+          "sha256": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd",
+          "size_bytes": 45138428
+        }
+      },
+      {
+        "expected": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+        "name": "software multiview.reference_path",
+        "observed": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb"
+      },
+      {
+        "expected": "candidate path",
+        "name": "software multiview.candidate_path.present",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": {
+          "exists": true,
+          "mtime_ns": 1780297325000000000,
+          "path": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+          "sha256": "aa3b2c93f5d82a4fe845191380663b723439d1ae2785e0d726fc4420cbb41467",
+          "size_bytes": 44732988
+        },
+        "name": "software multiview.reference_artifact",
+        "observed": {
+          "exists": true,
+          "mtime_ns": 1780297325000000000,
+          "path": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+          "sha256": "aa3b2c93f5d82a4fe845191380663b723439d1ae2785e0d726fc4420cbb41467",
+          "size_bytes": 44732988
+        }
+      },
+      {
+        "expected": {
+          "exists": true,
+          "mtime_ns": 1780324286408382860,
+          "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+          "sha256": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd",
+          "size_bytes": 45138428
+        },
+        "name": "software multiview.candidate_artifact",
+        "observed": {
+          "exists": true,
+          "mtime_ns": 1780324286408382860,
+          "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+          "sha256": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd",
+          "size_bytes": 45138428
+        }
+      },
+      {
+        "expected": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+        "name": "sampled high/low support screen.reference_path",
+        "observed": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb"
+      },
+      {
+        "expected": "candidate path",
+        "name": "sampled high/low support screen.candidate_path.present",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": {
+          "exists": true,
+          "mtime_ns": 1780297325000000000,
+          "path": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+          "sha256": "aa3b2c93f5d82a4fe845191380663b723439d1ae2785e0d726fc4420cbb41467",
+          "size_bytes": 44732988
+        },
+        "name": "sampled high/low support screen.reference_artifact",
+        "observed": {
+          "exists": true,
+          "mtime_ns": 1780297325000000000,
+          "path": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+          "sha256": "aa3b2c93f5d82a4fe845191380663b723439d1ae2785e0d726fc4420cbb41467",
+          "size_bytes": 44732988
+        }
+      },
+      {
+        "expected": {
+          "exists": true,
+          "mtime_ns": 1780324286408382860,
+          "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+          "sha256": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd",
+          "size_bytes": 45138428
+        },
+        "name": "sampled high/low support screen.candidate_artifact",
+        "observed": {
+          "exists": true,
+          "mtime_ns": 1780324286408382860,
+          "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+          "sha256": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd",
+          "size_bytes": 45138428
+        }
+      },
+      {
+        "expected": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+        "name": "exact horizon orientation/winding gate.reference_path",
+        "observed": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb"
+      },
+      {
+        "expected": "candidate path",
+        "name": "exact horizon orientation/winding gate.candidate_path.present",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": {
+          "exists": true,
+          "mtime_ns": 1780297325000000000,
+          "path": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+          "sha256": "aa3b2c93f5d82a4fe845191380663b723439d1ae2785e0d726fc4420cbb41467",
+          "size_bytes": 44732988
+        },
+        "name": "exact horizon orientation/winding gate.reference_artifact",
+        "observed": {
+          "exists": true,
+          "mtime_ns": 1780297325000000000,
+          "path": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+          "sha256": "aa3b2c93f5d82a4fe845191380663b723439d1ae2785e0d726fc4420cbb41467",
+          "size_bytes": 44732988
+        }
+      },
+      {
+        "expected": {
+          "exists": true,
+          "mtime_ns": 1780324286408382860,
+          "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+          "sha256": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd",
+          "size_bytes": 45138428
+        },
+        "name": "exact horizon orientation/winding gate.candidate_artifact",
+        "observed": {
+          "exists": true,
+          "mtime_ns": 1780324286408382860,
+          "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+          "sha256": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd",
+          "size_bytes": 45138428
+        }
+      },
+      {
+        "expected": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+        "name": "browser viewer.reference_path",
+        "observed": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb"
+      },
+      {
+        "expected": "candidate path",
+        "name": "browser viewer.candidate_path.present",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": {
+          "exists": true,
+          "mtime_ns": 1780297325000000000,
+          "path": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+          "sha256": "aa3b2c93f5d82a4fe845191380663b723439d1ae2785e0d726fc4420cbb41467",
+          "size_bytes": 44732988
+        },
+        "name": "browser viewer.reference_artifact",
+        "observed": {
+          "exists": true,
+          "mtime_ns": 1780297325000000000,
+          "path": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+          "sha256": "aa3b2c93f5d82a4fe845191380663b723439d1ae2785e0d726fc4420cbb41467",
+          "size_bytes": 44732988
+        }
+      },
+      {
+        "expected": {
+          "exists": true,
+          "mtime_ns": 1780324286408382860,
+          "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+          "sha256": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd",
+          "size_bytes": 45138428
+        },
+        "name": "browser viewer.candidate_artifact",
+        "observed": {
+          "exists": true,
+          "mtime_ns": 1780324286408382860,
+          "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+          "sha256": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd",
+          "size_bytes": 45138428
+        }
+      },
+      {
+        "expected": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+        "name": "browser multi-elevation.reference_path",
+        "observed": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb"
+      },
+      {
+        "expected": "candidate path",
+        "name": "browser multi-elevation.candidate_path.present",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": {
+          "exists": true,
+          "mtime_ns": 1780297325000000000,
+          "path": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+          "sha256": "aa3b2c93f5d82a4fe845191380663b723439d1ae2785e0d726fc4420cbb41467",
+          "size_bytes": 44732988
+        },
+        "name": "browser multi-elevation.reference_artifact",
+        "observed": {
+          "exists": true,
+          "mtime_ns": 1780297325000000000,
+          "path": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+          "sha256": "aa3b2c93f5d82a4fe845191380663b723439d1ae2785e0d726fc4420cbb41467",
+          "size_bytes": 44732988
+        }
+      },
+      {
+        "expected": {
+          "exists": true,
+          "mtime_ns": 1780324286408382860,
+          "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+          "sha256": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd",
+          "size_bytes": 45138428
+        },
+        "name": "browser multi-elevation.candidate_artifact",
+        "observed": {
+          "exists": true,
+          "mtime_ns": 1780324286408382860,
+          "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+          "sha256": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd",
+          "size_bytes": 45138428
+        }
+      },
+      {
+        "expected": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+        "name": "browser close-up.reference_path",
+        "observed": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb"
+      },
+      {
+        "expected": "candidate path",
+        "name": "browser close-up.candidate_path.present",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": {
+          "exists": true,
+          "mtime_ns": 1780297325000000000,
+          "path": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+          "sha256": "aa3b2c93f5d82a4fe845191380663b723439d1ae2785e0d726fc4420cbb41467",
+          "size_bytes": 44732988
+        },
+        "name": "browser close-up.reference_artifact",
+        "observed": {
+          "exists": true,
+          "mtime_ns": 1780297325000000000,
+          "path": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+          "sha256": "aa3b2c93f5d82a4fe845191380663b723439d1ae2785e0d726fc4420cbb41467",
+          "size_bytes": 44732988
+        }
+      },
+      {
+        "expected": {
+          "exists": true,
+          "mtime_ns": 1780324286408382860,
+          "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+          "sha256": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd",
+          "size_bytes": 45138428
+        },
+        "name": "browser close-up.candidate_artifact",
+        "observed": {
+          "exists": true,
+          "mtime_ns": 1780324286408382860,
+          "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+          "sha256": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd",
+          "size_bytes": 45138428
+        }
+      },
+      {
+        "expected": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+        "name": "browser specular.reference_path",
+        "observed": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb"
+      },
+      {
+        "expected": "candidate path",
+        "name": "browser specular.candidate_path.present",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": {
+          "exists": true,
+          "mtime_ns": 1780297325000000000,
+          "path": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+          "sha256": "aa3b2c93f5d82a4fe845191380663b723439d1ae2785e0d726fc4420cbb41467",
+          "size_bytes": 44732988
+        },
+        "name": "browser specular.reference_artifact",
+        "observed": {
+          "exists": true,
+          "mtime_ns": 1780297325000000000,
+          "path": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+          "sha256": "aa3b2c93f5d82a4fe845191380663b723439d1ae2785e0d726fc4420cbb41467",
+          "size_bytes": 44732988
+        }
+      },
+      {
+        "expected": {
+          "exists": true,
+          "mtime_ns": 1780324286408382860,
+          "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+          "sha256": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd",
+          "size_bytes": 45138428
+        },
+        "name": "browser specular.candidate_artifact",
+        "observed": {
+          "exists": true,
+          "mtime_ns": 1780324286408382860,
+          "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+          "sha256": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd",
+          "size_bytes": 45138428
+        }
+      },
+      {
+        "expected": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb",
+        "name": "reference-geometry.reference_path",
+        "observed": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb"
+      },
+      {
+        "expected": "candidate path",
+        "name": "reference-geometry.candidate_path.present",
+        "observed": "<repo>/artifacts/runs/m118_m117_residual_attribution_matrix/m117_material_on_cuda_shell/output.glb"
+      },
+      {
+        "expected": [
+          "candidate_primitives_have_materials",
+          "image[0].alpha_semantics",
+          "material[0].alphaMode",
+          "material[0].baseColorFactor",
+          "material[0].baseColorFactor.alpha",
+          "material[0].baseColorTexture.presence_matches_reference",
+          "material[0].baseColorTexture.present",
+          "material[0].baseColorTexture.sampler",
+          "material[0].baseColorTexture.texCoord",
+          "material[0].candidate_only_transparency_extensions",
+          "material[0].doubleSided",
+          "material[0].emissiveFactor",
+          "material[0].emissiveTexture.presence_matches_reference",
+          "material[0].extension_set_matches_reference",
+          "material[0].metallicFactor",
+          "material[0].metallicRoughnessTexture.presence_matches_reference",
+          "material[0].metallicRoughnessTexture.present",
+          "material[0].metallicRoughnessTexture.sampler",
+          "material[0].metallicRoughnessTexture.texCoord",
+          "material[0].normalTexture.presence_matches_reference",
+          "material[0].occlusionTexture.presence_matches_reference",
+          "material[0].roughnessFactor",
+          "material_count",
+          "primitive_count"
+        ],
+        "name": "material.gate_signature",
+        "observed": [
+          "candidate_primitives_have_materials",
+          "image[0].alpha_semantics",
+          "image[1].alpha_semantics",
+          "material[0].alphaMode",
+          "material[0].baseColorFactor",
+          "material[0].baseColorFactor.alpha",
+          "material[0].baseColorTexture.presence_matches_reference",
+          "material[0].baseColorTexture.present",
+          "material[0].baseColorTexture.sampler",
+          "material[0].baseColorTexture.texCoord",
+          "material[0].candidate_only_transparency_extensions",
+          "material[0].doubleSided",
+          "material[0].emissiveFactor",
+          "material[0].emissiveTexture.presence_matches_reference",
+          "material[0].extension_set_matches_reference",
+          "material[0].metallicFactor",
+          "material[0].metallicRoughnessTexture.presence_matches_reference",
+          "material[0].metallicRoughnessTexture.present",
+          "material[0].metallicRoughnessTexture.sampler",
+          "material[0].metallicRoughnessTexture.texCoord",
+          "material[0].normalTexture.presence_matches_reference",
+          "material[0].occlusionTexture.presence_matches_reference",
+          "material[0].roughnessFactor",
+          "material_count",
+          "primitive_count"
+        ]
+      },
+      {
+        "expected": "explicit --expected-candidate path",
+        "name": "expected_candidate.anchor",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+        "name": "material.candidate_path",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+        "name": "software multiview.candidate_path",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+        "name": "sampled high/low support screen.candidate_path",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+        "name": "exact horizon orientation/winding gate.candidate_path",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+        "name": "browser viewer.candidate_path",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+        "name": "browser multi-elevation.candidate_path",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+        "name": "browser close-up.candidate_path",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+        "name": "browser specular.candidate_path",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": "validated GLB path",
+        "name": "GLB validation.path.present",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": {
+          "exists": true,
+          "mtime_ns": 1780324286408382860,
+          "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+          "sha256": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd",
+          "size_bytes": 45138428
+        },
+        "name": "GLB validation.artifact",
+        "observed": {
+          "exists": true,
+          "mtime_ns": 1780324286408382860,
+          "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+          "sha256": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd",
+          "size_bytes": 45138428
+        }
+      },
+      {
+        "expected": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb",
+        "name": "GLB validation.path",
+        "observed": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096/native_o_voxel_replay.glb"
+      },
+      {
+        "expected": "explicit alternate reference accepted",
+        "name": "expected_reference.frozen_or_explicit_override",
+        "observed": "<repo>/artifacts/runs/m19_cuda_texture_fresh_noise_save/outputs/output.glb"
+      },
+      {
+        "expected": "reference",
+        "name": "software multiview.normalization",
+        "observed": "reference"
+      },
+      {
+        "expected": 0.78,
+        "name": "software multiview.ortho_half",
+        "observed": 0.78
+      },
+      {
+        "expected": 0.005,
+        "name": "software multiview.min_thickness",
+        "observed": 0.005
+      },
+      {
+        "expected": 2.0,
+        "name": "software multiview.boundary_tolerance_px",
+        "observed": 2.0
+      },
+      {
+        "expected": 0.0001,
+        "name": "software multiview.hit_depth_epsilon",
+        "observed": 0.0001
+      },
+      {
+        "expected": 160,
+        "name": "software multiview.resolution",
+        "observed": 160
+      },
+      {
+        "expected": [
+          0.0,
+          45.0,
+          90.0,
+          135.0,
+          180.0,
+          225.0,
+          270.0,
+          315.0
+        ],
+        "name": "software multiview.angles",
+        "observed": [
+          0.0,
+          45.0,
+          90.0,
+          135.0,
+          180.0,
+          225.0,
+          270.0,
+          315.0
+        ]
+      },
+      {
+        "expected": [
+          0.0
+        ],
+        "name": "software multiview.elevations",
+        "observed": [
+          0.0
+        ]
+      },
+      {
+        "expected": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            45.0,
+            0.0
+          ],
+          [
+            90.0,
+            0.0
+          ],
+          [
+            135.0,
+            0.0
+          ],
+          [
+            180.0,
+            0.0
+          ],
+          [
+            225.0,
+            0.0
+          ],
+          [
+            270.0,
+            0.0
+          ],
+          [
+            315.0,
+            0.0
+          ]
+        ],
+        "name": "software multiview.views_grid",
+        "observed": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            45.0,
+            0.0
+          ],
+          [
+            90.0,
+            0.0
+          ],
+          [
+            135.0,
+            0.0
+          ],
+          [
+            180.0,
+            0.0
+          ],
+          [
+            225.0,
+            0.0
+          ],
+          [
+            270.0,
+            0.0
+          ],
+          [
+            315.0,
+            0.0
+          ]
+        ]
+      },
+      {
+        "expected": "8 unique labels",
+        "name": "software multiview.views_labels_unique",
+        "observed": [
+          "view_000",
+          "view_045",
+          "view_090",
+          "view_135",
+          "view_180",
+          "view_225",
+          "view_270",
+          "view_315"
+        ]
+      },
+      {
+        "expected": 20000,
+        "name": "software multiview.chamfer_samples",
+        "observed": 20000
+      },
+      {
+        "expected": 20000,
+        "name": "software multiview.surface_distance_samples",
+        "observed": 20000
+      },
+      {
+        "expected": 16,
+        "name": "software multiview.surface_distance_k",
+        "observed": 16
+      },
+      {
+        "expected": "sampled-surface-proxy",
+        "name": "software multiview.view_backend",
+        "observed": "sampled-surface-proxy"
+      },
+      {
+        "expected": 1024,
+        "name": "software multiview.ray_chunk_size",
+        "observed": 1024
+      },
+      {
+        "expected": 120000,
+        "name": "software multiview.ray_face_target",
+        "observed": 120000
+      },
+      {
+        "expected": 7,
+        "name": "software multiview.ray_simplify_aggression",
+        "observed": 7
+      },
+      {
+        "expected": 4000000,
+        "name": "software multiview.surface_proxy_samples",
+        "observed": 4000000
+      },
+      {
+        "expected": 42,
+        "name": "software multiview.seed",
+        "observed": 42
+      },
+      {
+        "expected": "sampled-surface-proxy",
+        "name": "software multiview.surface_proxy.reference.backend",
+        "observed": "sampled-surface-proxy"
+      },
+      {
+        "expected": "surface_proxy_v2_interpolated_vertex_normals",
+        "name": "software multiview.surface_proxy.reference.method_signature",
+        "observed": "surface_proxy_v2_interpolated_vertex_normals"
+      },
+      {
+        "expected": 4000000,
+        "name": "software multiview.surface_proxy.reference.samples",
+        "observed": 4000000
+      },
+      {
+        "expected": 42,
+        "name": "software multiview.surface_proxy.reference.seed",
+        "observed": 42
+      },
+      {
+        "expected": "non-empty string",
+        "name": "software multiview.surface_proxy.reference.cache_key",
+        "observed": "aa3b2c93f5d82a4fe8451913_n4000000_seed42_surface_proxy_v2_interpolated_vertex_normals"
+      },
+      {
+        "expected": "64-char sha256",
+        "name": "software multiview.surface_proxy.reference.source_sha256",
+        "observed": "aa3b2c93f5d82a4fe845191380663b723439d1ae2785e0d726fc4420cbb41467"
+      },
+      {
+        "expected": "sampled-surface-proxy",
+        "name": "software multiview.surface_proxy.candidate.backend",
+        "observed": "sampled-surface-proxy"
+      },
+      {
+        "expected": "surface_proxy_v2_interpolated_vertex_normals",
+        "name": "software multiview.surface_proxy.candidate.method_signature",
+        "observed": "surface_proxy_v2_interpolated_vertex_normals"
+      },
+      {
+        "expected": 4000000,
+        "name": "software multiview.surface_proxy.candidate.samples",
+        "observed": 4000000
+      },
+      {
+        "expected": 42,
+        "name": "software multiview.surface_proxy.candidate.seed",
+        "observed": 42
+      },
+      {
+        "expected": "non-empty string",
+        "name": "software multiview.surface_proxy.candidate.cache_key",
+        "observed": "3a0307cceb0960d820a5c31a_n4000000_seed42_surface_proxy_v2_interpolated_vertex_normals"
+      },
+      {
+        "expected": "64-char sha256",
+        "name": "software multiview.surface_proxy.candidate.source_sha256",
+        "observed": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd"
+      },
+      {
+        "expected": [
+          [
+            "all_views.albedo_mae.max",
+            "<=",
+            "0.04"
+          ],
+          [
+            "all_views.albedo_mae.mean",
+            "<=",
+            "0.025"
+          ],
+          [
+            "all_views.silhouette_iou.mean",
+            ">=",
+            "0.985"
+          ],
+          [
+            "all_views.single_hit_abs_delta.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "all_views.thick_ray_fraction.max",
+            "<=",
+            "0.05"
+          ],
+          [
+            "all_views.thin_ray_fraction.max",
+            "<=",
+            "0.05"
+          ],
+          [
+            "chamfer.f_score_0p005",
+            ">=",
+            "0.65"
+          ],
+          [
+            "chamfer.f_score_0p01",
+            ">=",
+            "0.97"
+          ],
+          [
+            "chamfer.symmetric_p99",
+            "<=",
+            "0.0135"
+          ],
+          [
+            "mesh.boundary_edge_length_over_area_ratio",
+            "<=",
+            "1.1"
+          ],
+          [
+            "sample_proxy.candidate.coverage_present",
+            "==",
+            "8"
+          ],
+          [
+            "sample_proxy.candidate.mean_samples_per_occupied_pixel.min",
+            ">=",
+            "8.0"
+          ],
+          [
+            "sample_proxy.candidate.p05_samples_per_occupied_pixel.min",
+            ">=",
+            "2.0"
+          ],
+          [
+            "sample_proxy.candidate.sparse_pixel_fraction_under_3_samples.max",
+            "<=",
+            "0.1"
+          ],
+          [
+            "sample_proxy.reference.coverage_present",
+            "==",
+            "8"
+          ],
+          [
+            "sample_proxy.reference.mean_samples_per_occupied_pixel.min",
+            ">=",
+            "8.0"
+          ],
+          [
+            "sample_proxy.reference.p05_samples_per_occupied_pixel.min",
+            ">=",
+            "2.0"
+          ],
+          [
+            "sample_proxy.reference.sparse_pixel_fraction_under_3_samples.max",
+            "<=",
+            "0.1"
+          ],
+          [
+            "side_diagonal.albedo_mae.max",
+            "<=",
+            "0.035"
+          ],
+          [
+            "side_diagonal.albedo_mae.mean",
+            "<=",
+            "0.025"
+          ],
+          [
+            "side_diagonal.area_ratio.max",
+            "in",
+            "[0.985, 1.015]"
+          ],
+          [
+            "side_diagonal.area_ratio.min",
+            "in",
+            "[0.985, 1.015]"
+          ],
+          [
+            "side_diagonal.boundary_fscore.min",
+            ">=",
+            "0.95"
+          ],
+          [
+            "side_diagonal.candidate_extra_fraction.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "side_diagonal.depth_p95.max",
+            "<=",
+            "0.01"
+          ],
+          [
+            "side_diagonal.reference_missing_fraction.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "side_diagonal.silhouette_iou.min",
+            ">=",
+            "0.97"
+          ],
+          [
+            "side_diagonal.single_hit_abs_delta.max",
+            "<=",
+            "0.01"
+          ],
+          [
+            "side_diagonal.thick_ray_fraction.max",
+            "<=",
+            "0.03"
+          ],
+          [
+            "side_diagonal.thickness_ratio_median.mean",
+            "in",
+            "[0.97, 1.03]"
+          ],
+          [
+            "side_diagonal.thickness_ratio_p05.min",
+            ">=",
+            "0.8"
+          ],
+          [
+            "side_diagonal.thickness_ratio_p95.max",
+            "<=",
+            "1.2"
+          ],
+          [
+            "side_diagonal.thickness_valid_pixel_fraction.min",
+            ">=",
+            "0.45"
+          ],
+          [
+            "side_diagonal.thin_ray_fraction.max",
+            "<=",
+            "0.03"
+          ],
+          [
+            "surface_distance.available",
+            "==",
+            "1.0"
+          ],
+          [
+            "surface_distance.candidate_extra_0p0025",
+            "<=",
+            "0.001"
+          ],
+          [
+            "surface_distance.candidate_to_reference.p95",
+            "<=",
+            "0.00025"
+          ],
+          [
+            "surface_distance.reference_missing_0p0025",
+            "<=",
+            "0.001"
+          ],
+          [
+            "surface_distance.reference_to_candidate.p95",
+            "<=",
+            "0.00025"
+          ],
+          [
+            "surface_distance.symmetric.mean",
+            "<=",
+            "5e-05"
+          ],
+          [
+            "surface_distance.symmetric.p95",
+            "<=",
+            "0.00025"
+          ],
+          [
+            "surface_distance.symmetric.p99",
+            "<=",
+            "0.0005"
+          ]
+        ],
+        "name": "software multiview.gate_signature",
+        "observed": [
+          [
+            "all_views.albedo_mae.max",
+            "<=",
+            "0.04"
+          ],
+          [
+            "all_views.albedo_mae.mean",
+            "<=",
+            "0.025"
+          ],
+          [
+            "all_views.silhouette_iou.mean",
+            ">=",
+            "0.985"
+          ],
+          [
+            "all_views.single_hit_abs_delta.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "all_views.thick_ray_fraction.max",
+            "<=",
+            "0.05"
+          ],
+          [
+            "all_views.thin_ray_fraction.max",
+            "<=",
+            "0.05"
+          ],
+          [
+            "chamfer.f_score_0p005",
+            ">=",
+            "0.65"
+          ],
+          [
+            "chamfer.f_score_0p01",
+            ">=",
+            "0.97"
+          ],
+          [
+            "chamfer.symmetric_p99",
+            "<=",
+            "0.0135"
+          ],
+          [
+            "mesh.boundary_edge_length_over_area_ratio",
+            "<=",
+            "1.1"
+          ],
+          [
+            "sample_proxy.candidate.coverage_present",
+            "==",
+            "8"
+          ],
+          [
+            "sample_proxy.candidate.mean_samples_per_occupied_pixel.min",
+            ">=",
+            "8.0"
+          ],
+          [
+            "sample_proxy.candidate.p05_samples_per_occupied_pixel.min",
+            ">=",
+            "2.0"
+          ],
+          [
+            "sample_proxy.candidate.sparse_pixel_fraction_under_3_samples.max",
+            "<=",
+            "0.1"
+          ],
+          [
+            "sample_proxy.reference.coverage_present",
+            "==",
+            "8"
+          ],
+          [
+            "sample_proxy.reference.mean_samples_per_occupied_pixel.min",
+            ">=",
+            "8.0"
+          ],
+          [
+            "sample_proxy.reference.p05_samples_per_occupied_pixel.min",
+            ">=",
+            "2.0"
+          ],
+          [
+            "sample_proxy.reference.sparse_pixel_fraction_under_3_samples.max",
+            "<=",
+            "0.1"
+          ],
+          [
+            "side_diagonal.albedo_mae.max",
+            "<=",
+            "0.035"
+          ],
+          [
+            "side_diagonal.albedo_mae.mean",
+            "<=",
+            "0.025"
+          ],
+          [
+            "side_diagonal.area_ratio.max",
+            "in",
+            "[0.985, 1.015]"
+          ],
+          [
+            "side_diagonal.area_ratio.min",
+            "in",
+            "[0.985, 1.015]"
+          ],
+          [
+            "side_diagonal.boundary_fscore.min",
+            ">=",
+            "0.95"
+          ],
+          [
+            "side_diagonal.candidate_extra_fraction.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "side_diagonal.depth_p95.max",
+            "<=",
+            "0.01"
+          ],
+          [
+            "side_diagonal.reference_missing_fraction.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "side_diagonal.silhouette_iou.min",
+            ">=",
+            "0.97"
+          ],
+          [
+            "side_diagonal.single_hit_abs_delta.max",
+            "<=",
+            "0.01"
+          ],
+          [
+            "side_diagonal.thick_ray_fraction.max",
+            "<=",
+            "0.03"
+          ],
+          [
+            "side_diagonal.thickness_ratio_median.mean",
+            "in",
+            "[0.97, 1.03]"
+          ],
+          [
+            "side_diagonal.thickness_ratio_p05.min",
+            ">=",
+            "0.8"
+          ],
+          [
+            "side_diagonal.thickness_ratio_p95.max",
+            "<=",
+            "1.2"
+          ],
+          [
+            "side_diagonal.thickness_valid_pixel_fraction.min",
+            ">=",
+            "0.45"
+          ],
+          [
+            "side_diagonal.thin_ray_fraction.max",
+            "<=",
+            "0.03"
+          ],
+          [
+            "surface_distance.available",
+            "==",
+            "1.0"
+          ],
+          [
+            "surface_distance.candidate_extra_0p0025",
+            "<=",
+            "0.001"
+          ],
+          [
+            "surface_distance.candidate_to_reference.p95",
+            "<=",
+            "0.00025"
+          ],
+          [
+            "surface_distance.reference_missing_0p0025",
+            "<=",
+            "0.001"
+          ],
+          [
+            "surface_distance.reference_to_candidate.p95",
+            "<=",
+            "0.00025"
+          ],
+          [
+            "surface_distance.symmetric.mean",
+            "<=",
+            "5e-05"
+          ],
+          [
+            "surface_distance.symmetric.p95",
+            "<=",
+            "0.00025"
+          ],
+          [
+            "surface_distance.symmetric.p99",
+            "<=",
+            "0.0005"
+          ]
+        ]
+      },
+      {
+        "expected": "all verdict values finite",
+        "name": "software multiview.finite_gate_values",
+        "observed": []
+      },
+      {
+        "expected": "reference",
+        "name": "sampled high/low support screen.normalization",
+        "observed": "reference"
+      },
+      {
+        "expected": 0.78,
+        "name": "sampled high/low support screen.ortho_half",
+        "observed": 0.78
+      },
+      {
+        "expected": 0.005,
+        "name": "sampled high/low support screen.min_thickness",
+        "observed": 0.005
+      },
+      {
+        "expected": 2.0,
+        "name": "sampled high/low support screen.boundary_tolerance_px",
+        "observed": 2.0
+      },
+      {
+        "expected": 0.0001,
+        "name": "sampled high/low support screen.hit_depth_epsilon",
+        "observed": 0.0001
+      },
+      {
+        "expected": 96,
+        "name": "sampled high/low support screen.resolution",
+        "observed": 96
+      },
+      {
+        "expected": [
+          0.0,
+          45.0,
+          90.0,
+          135.0,
+          180.0,
+          225.0,
+          270.0,
+          315.0
+        ],
+        "name": "sampled high/low support screen.angles",
+        "observed": [
+          0.0,
+          45.0,
+          90.0,
+          135.0,
+          180.0,
+          225.0,
+          270.0,
+          315.0
+        ]
+      },
+      {
+        "expected": [
+          -15.0,
+          0.0,
+          15.0
+        ],
+        "name": "sampled high/low support screen.elevations",
+        "observed": [
+          -15.0,
+          0.0,
+          15.0
+        ]
+      },
+      {
+        "expected": [
+          [
+            0.0,
+            -15.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            15.0
+          ],
+          [
+            45.0,
+            -15.0
+          ],
+          [
+            45.0,
+            0.0
+          ],
+          [
+            45.0,
+            15.0
+          ],
+          [
+            90.0,
+            -15.0
+          ],
+          [
+            90.0,
+            0.0
+          ],
+          [
+            90.0,
+            15.0
+          ],
+          [
+            135.0,
+            -15.0
+          ],
+          [
+            135.0,
+            0.0
+          ],
+          [
+            135.0,
+            15.0
+          ],
+          [
+            180.0,
+            -15.0
+          ],
+          [
+            180.0,
+            0.0
+          ],
+          [
+            180.0,
+            15.0
+          ],
+          [
+            225.0,
+            -15.0
+          ],
+          [
+            225.0,
+            0.0
+          ],
+          [
+            225.0,
+            15.0
+          ],
+          [
+            270.0,
+            -15.0
+          ],
+          [
+            270.0,
+            0.0
+          ],
+          [
+            270.0,
+            15.0
+          ],
+          [
+            315.0,
+            -15.0
+          ],
+          [
+            315.0,
+            0.0
+          ],
+          [
+            315.0,
+            15.0
+          ]
+        ],
+        "name": "sampled high/low support screen.views_grid",
+        "observed": [
+          [
+            0.0,
+            -15.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            15.0
+          ],
+          [
+            45.0,
+            -15.0
+          ],
+          [
+            45.0,
+            0.0
+          ],
+          [
+            45.0,
+            15.0
+          ],
+          [
+            90.0,
+            -15.0
+          ],
+          [
+            90.0,
+            0.0
+          ],
+          [
+            90.0,
+            15.0
+          ],
+          [
+            135.0,
+            -15.0
+          ],
+          [
+            135.0,
+            0.0
+          ],
+          [
+            135.0,
+            15.0
+          ],
+          [
+            180.0,
+            -15.0
+          ],
+          [
+            180.0,
+            0.0
+          ],
+          [
+            180.0,
+            15.0
+          ],
+          [
+            225.0,
+            -15.0
+          ],
+          [
+            225.0,
+            0.0
+          ],
+          [
+            225.0,
+            15.0
+          ],
+          [
+            270.0,
+            -15.0
+          ],
+          [
+            270.0,
+            0.0
+          ],
+          [
+            270.0,
+            15.0
+          ],
+          [
+            315.0,
+            -15.0
+          ],
+          [
+            315.0,
+            0.0
+          ],
+          [
+            315.0,
+            15.0
+          ]
+        ]
+      },
+      {
+        "expected": "24 unique labels",
+        "name": "sampled high/low support screen.views_labels_unique",
+        "observed": [
+          "view_000_elev_m015",
+          "view_045_elev_m015",
+          "view_090_elev_m015",
+          "view_135_elev_m015",
+          "view_180_elev_m015",
+          "view_225_elev_m015",
+          "view_270_elev_m015",
+          "view_315_elev_m015",
+          "view_000",
+          "view_045",
+          "view_090",
+          "view_135",
+          "view_180",
+          "view_225",
+          "view_270",
+          "view_315",
+          "view_000_elev_p015",
+          "view_045_elev_p015",
+          "view_090_elev_p015",
+          "view_135_elev_p015",
+          "view_180_elev_p015",
+          "view_225_elev_p015",
+          "view_270_elev_p015",
+          "view_315_elev_p015"
+        ]
+      },
+      {
+        "expected": 20000,
+        "name": "sampled high/low support screen.chamfer_samples",
+        "observed": 20000
+      },
+      {
+        "expected": 20000,
+        "name": "sampled high/low support screen.surface_distance_samples",
+        "observed": 20000
+      },
+      {
+        "expected": 16,
+        "name": "sampled high/low support screen.surface_distance_k",
+        "observed": 16
+      },
+      {
+        "expected": "sampled-surface-proxy",
+        "name": "sampled high/low support screen.view_backend",
+        "observed": "sampled-surface-proxy"
+      },
+      {
+        "expected": 1024,
+        "name": "sampled high/low support screen.ray_chunk_size",
+        "observed": 1024
+      },
+      {
+        "expected": 120000,
+        "name": "sampled high/low support screen.ray_face_target",
+        "observed": 120000
+      },
+      {
+        "expected": 7,
+        "name": "sampled high/low support screen.ray_simplify_aggression",
+        "observed": 7
+      },
+      {
+        "expected": 4000000,
+        "name": "sampled high/low support screen.surface_proxy_samples",
+        "observed": 4000000
+      },
+      {
+        "expected": 42,
+        "name": "sampled high/low support screen.seed",
+        "observed": 42
+      },
+      {
+        "expected": "sampled-surface-proxy",
+        "name": "sampled high/low support screen.surface_proxy.reference.backend",
+        "observed": "sampled-surface-proxy"
+      },
+      {
+        "expected": "surface_proxy_v2_interpolated_vertex_normals",
+        "name": "sampled high/low support screen.surface_proxy.reference.method_signature",
+        "observed": "surface_proxy_v2_interpolated_vertex_normals"
+      },
+      {
+        "expected": 4000000,
+        "name": "sampled high/low support screen.surface_proxy.reference.samples",
+        "observed": 4000000
+      },
+      {
+        "expected": 42,
+        "name": "sampled high/low support screen.surface_proxy.reference.seed",
+        "observed": 42
+      },
+      {
+        "expected": "non-empty string",
+        "name": "sampled high/low support screen.surface_proxy.reference.cache_key",
+        "observed": "aa3b2c93f5d82a4fe8451913_n4000000_seed42_surface_proxy_v2_interpolated_vertex_normals"
+      },
+      {
+        "expected": "64-char sha256",
+        "name": "sampled high/low support screen.surface_proxy.reference.source_sha256",
+        "observed": "aa3b2c93f5d82a4fe845191380663b723439d1ae2785e0d726fc4420cbb41467"
+      },
+      {
+        "expected": "sampled-surface-proxy",
+        "name": "sampled high/low support screen.surface_proxy.candidate.backend",
+        "observed": "sampled-surface-proxy"
+      },
+      {
+        "expected": "surface_proxy_v2_interpolated_vertex_normals",
+        "name": "sampled high/low support screen.surface_proxy.candidate.method_signature",
+        "observed": "surface_proxy_v2_interpolated_vertex_normals"
+      },
+      {
+        "expected": 4000000,
+        "name": "sampled high/low support screen.surface_proxy.candidate.samples",
+        "observed": 4000000
+      },
+      {
+        "expected": 42,
+        "name": "sampled high/low support screen.surface_proxy.candidate.seed",
+        "observed": 42
+      },
+      {
+        "expected": "non-empty string",
+        "name": "sampled high/low support screen.surface_proxy.candidate.cache_key",
+        "observed": "3a0307cceb0960d820a5c31a_n4000000_seed42_surface_proxy_v2_interpolated_vertex_normals"
+      },
+      {
+        "expected": "64-char sha256",
+        "name": "sampled high/low support screen.surface_proxy.candidate.source_sha256",
+        "observed": "3a0307cceb0960d820a5c31a84e3b03898c7dffe67da87bfeca33769650d31dd"
+      },
+      {
+        "expected": [
+          [
+            "all_views.albedo_mae.max",
+            "<=",
+            "0.04"
+          ],
+          [
+            "all_views.albedo_mae.mean",
+            "<=",
+            "0.025"
+          ],
+          [
+            "all_views.silhouette_iou.mean",
+            ">=",
+            "0.985"
+          ],
+          [
+            "all_views.single_hit_abs_delta.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "all_views.thick_ray_fraction.max",
+            "<=",
+            "0.05"
+          ],
+          [
+            "all_views.thin_ray_fraction.max",
+            "<=",
+            "0.05"
+          ],
+          [
+            "chamfer.f_score_0p005",
+            ">=",
+            "0.65"
+          ],
+          [
+            "chamfer.f_score_0p01",
+            ">=",
+            "0.97"
+          ],
+          [
+            "chamfer.symmetric_p99",
+            "<=",
+            "0.0135"
+          ],
+          [
+            "mesh.boundary_edge_length_over_area_ratio",
+            "<=",
+            "1.1"
+          ],
+          [
+            "sample_proxy.candidate.coverage_present",
+            "==",
+            "24"
+          ],
+          [
+            "sample_proxy.candidate.mean_samples_per_occupied_pixel.min",
+            ">=",
+            "8.0"
+          ],
+          [
+            "sample_proxy.candidate.p05_samples_per_occupied_pixel.min",
+            ">=",
+            "2.0"
+          ],
+          [
+            "sample_proxy.candidate.sparse_pixel_fraction_under_3_samples.max",
+            "<=",
+            "0.1"
+          ],
+          [
+            "sample_proxy.reference.coverage_present",
+            "==",
+            "24"
+          ],
+          [
+            "sample_proxy.reference.mean_samples_per_occupied_pixel.min",
+            ">=",
+            "8.0"
+          ],
+          [
+            "sample_proxy.reference.p05_samples_per_occupied_pixel.min",
+            ">=",
+            "2.0"
+          ],
+          [
+            "sample_proxy.reference.sparse_pixel_fraction_under_3_samples.max",
+            "<=",
+            "0.1"
+          ],
+          [
+            "side_diagonal.albedo_mae.max",
+            "<=",
+            "0.035"
+          ],
+          [
+            "side_diagonal.albedo_mae.mean",
+            "<=",
+            "0.025"
+          ],
+          [
+            "side_diagonal.area_ratio.max",
+            "in",
+            "[0.985, 1.015]"
+          ],
+          [
+            "side_diagonal.area_ratio.min",
+            "in",
+            "[0.985, 1.015]"
+          ],
+          [
+            "side_diagonal.boundary_fscore.min",
+            ">=",
+            "0.95"
+          ],
+          [
+            "side_diagonal.candidate_extra_fraction.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "side_diagonal.depth_p95.max",
+            "<=",
+            "0.01"
+          ],
+          [
+            "side_diagonal.reference_missing_fraction.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "side_diagonal.silhouette_iou.min",
+            ">=",
+            "0.97"
+          ],
+          [
+            "side_diagonal.single_hit_abs_delta.max",
+            "<=",
+            "0.01"
+          ],
+          [
+            "side_diagonal.thick_ray_fraction.max",
+            "<=",
+            "0.03"
+          ],
+          [
+            "side_diagonal.thickness_ratio_median.mean",
+            "in",
+            "[0.97, 1.03]"
+          ],
+          [
+            "side_diagonal.thickness_ratio_p05.min",
+            ">=",
+            "0.8"
+          ],
+          [
+            "side_diagonal.thickness_ratio_p95.max",
+            "<=",
+            "1.2"
+          ],
+          [
+            "side_diagonal.thickness_valid_pixel_fraction.min",
+            ">=",
+            "0.45"
+          ],
+          [
+            "side_diagonal.thin_ray_fraction.max",
+            "<=",
+            "0.03"
+          ],
+          [
+            "surface_distance.available",
+            "==",
+            "1.0"
+          ],
+          [
+            "surface_distance.candidate_extra_0p0025",
+            "<=",
+            "0.001"
+          ],
+          [
+            "surface_distance.candidate_to_reference.p95",
+            "<=",
+            "0.00025"
+          ],
+          [
+            "surface_distance.reference_missing_0p0025",
+            "<=",
+            "0.001"
+          ],
+          [
+            "surface_distance.reference_to_candidate.p95",
+            "<=",
+            "0.00025"
+          ],
+          [
+            "surface_distance.symmetric.mean",
+            "<=",
+            "5e-05"
+          ],
+          [
+            "surface_distance.symmetric.p95",
+            "<=",
+            "0.00025"
+          ],
+          [
+            "surface_distance.symmetric.p99",
+            "<=",
+            "0.0005"
+          ]
+        ],
+        "name": "sampled high/low support screen.gate_signature",
+        "observed": [
+          [
+            "all_views.albedo_mae.max",
+            "<=",
+            "0.04"
+          ],
+          [
+            "all_views.albedo_mae.mean",
+            "<=",
+            "0.025"
+          ],
+          [
+            "all_views.silhouette_iou.mean",
+            ">=",
+            "0.985"
+          ],
+          [
+            "all_views.single_hit_abs_delta.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "all_views.thick_ray_fraction.max",
+            "<=",
+            "0.05"
+          ],
+          [
+            "all_views.thin_ray_fraction.max",
+            "<=",
+            "0.05"
+          ],
+          [
+            "chamfer.f_score_0p005",
+            ">=",
+            "0.65"
+          ],
+          [
+            "chamfer.f_score_0p01",
+            ">=",
+            "0.97"
+          ],
+          [
+            "chamfer.symmetric_p99",
+            "<=",
+            "0.0135"
+          ],
+          [
+            "mesh.boundary_edge_length_over_area_ratio",
+            "<=",
+            "1.1"
+          ],
+          [
+            "sample_proxy.candidate.coverage_present",
+            "==",
+            "24"
+          ],
+          [
+            "sample_proxy.candidate.mean_samples_per_occupied_pixel.min",
+            ">=",
+            "8.0"
+          ],
+          [
+            "sample_proxy.candidate.p05_samples_per_occupied_pixel.min",
+            ">=",
+            "2.0"
+          ],
+          [
+            "sample_proxy.candidate.sparse_pixel_fraction_under_3_samples.max",
+            "<=",
+            "0.1"
+          ],
+          [
+            "sample_proxy.reference.coverage_present",
+            "==",
+            "24"
+          ],
+          [
+            "sample_proxy.reference.mean_samples_per_occupied_pixel.min",
+            ">=",
+            "8.0"
+          ],
+          [
+            "sample_proxy.reference.p05_samples_per_occupied_pixel.min",
+            ">=",
+            "2.0"
+          ],
+          [
+            "sample_proxy.reference.sparse_pixel_fraction_under_3_samples.max",
+            "<=",
+            "0.1"
+          ],
+          [
+            "side_diagonal.albedo_mae.max",
+            "<=",
+            "0.035"
+          ],
+          [
+            "side_diagonal.albedo_mae.mean",
+            "<=",
+            "0.025"
+          ],
+          [
+            "side_diagonal.area_ratio.max",
+            "in",
+            "[0.985, 1.015]"
+          ],
+          [
+            "side_diagonal.area_ratio.min",
+            "in",
+            "[0.985, 1.015]"
+          ],
+          [
+            "side_diagonal.boundary_fscore.min",
+            ">=",
+            "0.95"
+          ],
+          [
+            "side_diagonal.candidate_extra_fraction.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "side_diagonal.depth_p95.max",
+            "<=",
+            "0.01"
+          ],
+          [
+            "side_diagonal.reference_missing_fraction.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "side_diagonal.silhouette_iou.min",
+            ">=",
+            "0.97"
+          ],
+          [
+            "side_diagonal.single_hit_abs_delta.max",
+            "<=",
+            "0.01"
+          ],
+          [
+            "side_diagonal.thick_ray_fraction.max",
+            "<=",
+            "0.03"
+          ],
+          [
+            "side_diagonal.thickness_ratio_median.mean",
+            "in",
+            "[0.97, 1.03]"
+          ],
+          [
+            "side_diagonal.thickness_ratio_p05.min",
+            ">=",
+            "0.8"
+          ],
+          [
+            "side_diagonal.thickness_ratio_p95.max",
+            "<=",
+            "1.2"
+          ],
+          [
+            "side_diagonal.thickness_valid_pixel_fraction.min",
+            ">=",
+            "0.45"
+          ],
+          [
+            "side_diagonal.thin_ray_fraction.max",
+            "<=",
+            "0.03"
+          ],
+          [
+            "surface_distance.available",
+            "==",
+            "1.0"
+          ],
+          [
+            "surface_distance.candidate_extra_0p0025",
+            "<=",
+            "0.001"
+          ],
+          [
+            "surface_distance.candidate_to_reference.p95",
+            "<=",
+            "0.00025"
+          ],
+          [
+            "surface_distance.reference_missing_0p0025",
+            "<=",
+            "0.001"
+          ],
+          [
+            "surface_distance.reference_to_candidate.p95",
+            "<=",
+            "0.00025"
+          ],
+          [
+            "surface_distance.symmetric.mean",
+            "<=",
+            "5e-05"
+          ],
+          [
+            "surface_distance.symmetric.p95",
+            "<=",
+            "0.00025"
+          ],
+          [
+            "surface_distance.symmetric.p99",
+            "<=",
+            "0.0005"
+          ]
+        ]
+      },
+      {
+        "expected": "all verdict values finite",
+        "name": "sampled high/low support screen.finite_gate_values",
+        "observed": []
+      },
+      {
+        "expected": "reference",
+        "name": "exact horizon orientation/winding gate.normalization",
+        "observed": "reference"
+      },
+      {
+        "expected": 0.78,
+        "name": "exact horizon orientation/winding gate.ortho_half",
+        "observed": 0.78
+      },
+      {
+        "expected": 0.005,
+        "name": "exact horizon orientation/winding gate.min_thickness",
+        "observed": 0.005
+      },
+      {
+        "expected": 2.0,
+        "name": "exact horizon orientation/winding gate.boundary_tolerance_px",
+        "observed": 2.0
+      },
+      {
+        "expected": 0.0001,
+        "name": "exact horizon orientation/winding gate.hit_depth_epsilon",
+        "observed": 0.0001
+      },
+      {
+        "expected": 160,
+        "name": "exact horizon orientation/winding gate.resolution",
+        "observed": 160
+      },
+      {
+        "expected": [
+          0.0,
+          45.0,
+          90.0,
+          135.0,
+          180.0,
+          225.0,
+          270.0,
+          315.0
+        ],
+        "name": "exact horizon orientation/winding gate.angles",
+        "observed": [
+          0.0,
+          45.0,
+          90.0,
+          135.0,
+          180.0,
+          225.0,
+          270.0,
+          315.0
+        ]
+      },
+      {
+        "expected": [
+          0.0
+        ],
+        "name": "exact horizon orientation/winding gate.elevations",
+        "observed": [
+          0.0
+        ]
+      },
+      {
+        "expected": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            45.0,
+            0.0
+          ],
+          [
+            90.0,
+            0.0
+          ],
+          [
+            135.0,
+            0.0
+          ],
+          [
+            180.0,
+            0.0
+          ],
+          [
+            225.0,
+            0.0
+          ],
+          [
+            270.0,
+            0.0
+          ],
+          [
+            315.0,
+            0.0
+          ]
+        ],
+        "name": "exact horizon orientation/winding gate.views_grid",
+        "observed": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            45.0,
+            0.0
+          ],
+          [
+            90.0,
+            0.0
+          ],
+          [
+            135.0,
+            0.0
+          ],
+          [
+            180.0,
+            0.0
+          ],
+          [
+            225.0,
+            0.0
+          ],
+          [
+            270.0,
+            0.0
+          ],
+          [
+            315.0,
+            0.0
+          ]
+        ]
+      },
+      {
+        "expected": "8 unique labels",
+        "name": "exact horizon orientation/winding gate.views_labels_unique",
+        "observed": [
+          "view_000",
+          "view_045",
+          "view_090",
+          "view_135",
+          "view_180",
+          "view_225",
+          "view_270",
+          "view_315"
+        ]
+      },
+      {
+        "expected": 20000,
+        "name": "exact horizon orientation/winding gate.chamfer_samples",
+        "observed": 20000
+      },
+      {
+        "expected": 20000,
+        "name": "exact horizon orientation/winding gate.surface_distance_samples",
+        "observed": 20000
+      },
+      {
+        "expected": 16,
+        "name": "exact horizon orientation/winding gate.surface_distance_k",
+        "observed": 16
+      },
+      {
+        "expected": "exact-ray",
+        "name": "exact horizon orientation/winding gate.view_backend",
+        "observed": "exact-ray"
+      },
+      {
+        "expected": 1024,
+        "name": "exact horizon orientation/winding gate.ray_chunk_size",
+        "observed": 1024
+      },
+      {
+        "expected": 0,
+        "name": "exact horizon orientation/winding gate.ray_face_target",
+        "observed": 0
+      },
+      {
+        "expected": 7,
+        "name": "exact horizon orientation/winding gate.ray_simplify_aggression",
+        "observed": 7
+      },
+      {
+        "expected": 4000000,
+        "name": "exact horizon orientation/winding gate.surface_proxy_samples",
+        "observed": 4000000
+      },
+      {
+        "expected": 42,
+        "name": "exact horizon orientation/winding gate.seed",
+        "observed": 42
+      },
+      {
+        "expected": [
+          [
+            "all_views.albedo_mae.max",
+            "<=",
+            "0.04"
+          ],
+          [
+            "all_views.albedo_mae.mean",
+            "<=",
+            "0.025"
+          ],
+          [
+            "all_views.backface_front_hit_delta.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "all_views.odd_hit_abs_delta.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "all_views.shaded_rgb_mae.max",
+            "<=",
+            "0.05"
+          ],
+          [
+            "all_views.shaded_rgb_mae.mean",
+            "<=",
+            "0.03"
+          ],
+          [
+            "all_views.shaded_rgb_mae_union.max",
+            "<=",
+            "0.065"
+          ],
+          [
+            "all_views.shaded_rgb_mae_union.mean",
+            "<=",
+            "0.04"
+          ],
+          [
+            "all_views.shaded_ssim.mean",
+            ">=",
+            "0.95"
+          ],
+          [
+            "all_views.silhouette_iou.mean",
+            ">=",
+            "0.985"
+          ],
+          [
+            "all_views.single_hit_abs_delta.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "all_views.thick_ray_fraction.max",
+            "<=",
+            "0.05"
+          ],
+          [
+            "all_views.thin_ray_fraction.max",
+            "<=",
+            "0.05"
+          ],
+          [
+            "chamfer.f_score_0p005",
+            ">=",
+            "0.65"
+          ],
+          [
+            "chamfer.f_score_0p01",
+            ">=",
+            "0.97"
+          ],
+          [
+            "chamfer.symmetric_p99",
+            "<=",
+            "0.0135"
+          ],
+          [
+            "mesh.boundary_edge_length_over_area_ratio",
+            "<=",
+            "1.1"
+          ],
+          [
+            "side_diagonal.albedo_mae.max",
+            "<=",
+            "0.035"
+          ],
+          [
+            "side_diagonal.albedo_mae.mean",
+            "<=",
+            "0.025"
+          ],
+          [
+            "side_diagonal.area_ratio.max",
+            "in",
+            "[0.985, 1.015]"
+          ],
+          [
+            "side_diagonal.area_ratio.min",
+            "in",
+            "[0.985, 1.015]"
+          ],
+          [
+            "side_diagonal.backface_front_hit_delta.max",
+            "<=",
+            "0.01"
+          ],
+          [
+            "side_diagonal.boundary_fscore.min",
+            ">=",
+            "0.95"
+          ],
+          [
+            "side_diagonal.candidate_extra_fraction.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "side_diagonal.depth_p95.max",
+            "<=",
+            "0.01"
+          ],
+          [
+            "side_diagonal.normal_cos_mean.mean",
+            ">=",
+            "0.985"
+          ],
+          [
+            "side_diagonal.odd_hit_abs_delta.max",
+            "<=",
+            "0.01"
+          ],
+          [
+            "side_diagonal.reference_missing_fraction.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "side_diagonal.shaded_rgb_mae.max",
+            "<=",
+            "0.045"
+          ],
+          [
+            "side_diagonal.shaded_rgb_mae.mean",
+            "<=",
+            "0.03"
+          ],
+          [
+            "side_diagonal.shaded_rgb_mae_union.max",
+            "<=",
+            "0.06"
+          ],
+          [
+            "side_diagonal.shaded_rgb_mae_union.mean",
+            "<=",
+            "0.04"
+          ],
+          [
+            "side_diagonal.shaded_ssim.min",
+            ">=",
+            "0.92"
+          ],
+          [
+            "side_diagonal.silhouette_iou.min",
+            ">=",
+            "0.97"
+          ],
+          [
+            "side_diagonal.single_hit_abs_delta.max",
+            "<=",
+            "0.01"
+          ],
+          [
+            "side_diagonal.thick_ray_fraction.max",
+            "<=",
+            "0.03"
+          ],
+          [
+            "side_diagonal.thickness_ratio_median.mean",
+            "in",
+            "[0.97, 1.03]"
+          ],
+          [
+            "side_diagonal.thickness_ratio_p05.min",
+            ">=",
+            "0.8"
+          ],
+          [
+            "side_diagonal.thickness_ratio_p95.max",
+            "<=",
+            "1.2"
+          ],
+          [
+            "side_diagonal.thickness_valid_pixel_fraction.min",
+            ">=",
+            "0.45"
+          ],
+          [
+            "side_diagonal.thin_ray_fraction.max",
+            "<=",
+            "0.03"
+          ],
+          [
+            "surface_distance.available",
+            "==",
+            "1.0"
+          ],
+          [
+            "surface_distance.candidate_extra_0p0025",
+            "<=",
+            "0.001"
+          ],
+          [
+            "surface_distance.candidate_to_reference.p95",
+            "<=",
+            "0.00025"
+          ],
+          [
+            "surface_distance.reference_missing_0p0025",
+            "<=",
+            "0.001"
+          ],
+          [
+            "surface_distance.reference_to_candidate.p95",
+            "<=",
+            "0.00025"
+          ],
+          [
+            "surface_distance.symmetric.mean",
+            "<=",
+            "5e-05"
+          ],
+          [
+            "surface_distance.symmetric.p95",
+            "<=",
+            "0.00025"
+          ],
+          [
+            "surface_distance.symmetric.p99",
+            "<=",
+            "0.0005"
+          ]
+        ],
+        "name": "exact horizon orientation/winding gate.gate_signature",
+        "observed": [
+          [
+            "all_views.albedo_mae.max",
+            "<=",
+            "0.04"
+          ],
+          [
+            "all_views.albedo_mae.mean",
+            "<=",
+            "0.025"
+          ],
+          [
+            "all_views.backface_front_hit_delta.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "all_views.odd_hit_abs_delta.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "all_views.shaded_rgb_mae.max",
+            "<=",
+            "0.05"
+          ],
+          [
+            "all_views.shaded_rgb_mae.mean",
+            "<=",
+            "0.03"
+          ],
+          [
+            "all_views.shaded_rgb_mae_union.max",
+            "<=",
+            "0.065"
+          ],
+          [
+            "all_views.shaded_rgb_mae_union.mean",
+            "<=",
+            "0.04"
+          ],
+          [
+            "all_views.shaded_ssim.mean",
+            ">=",
+            "0.95"
+          ],
+          [
+            "all_views.silhouette_iou.mean",
+            ">=",
+            "0.985"
+          ],
+          [
+            "all_views.single_hit_abs_delta.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "all_views.thick_ray_fraction.max",
+            "<=",
+            "0.05"
+          ],
+          [
+            "all_views.thin_ray_fraction.max",
+            "<=",
+            "0.05"
+          ],
+          [
+            "chamfer.f_score_0p005",
+            ">=",
+            "0.65"
+          ],
+          [
+            "chamfer.f_score_0p01",
+            ">=",
+            "0.97"
+          ],
+          [
+            "chamfer.symmetric_p99",
+            "<=",
+            "0.0135"
+          ],
+          [
+            "mesh.boundary_edge_length_over_area_ratio",
+            "<=",
+            "1.1"
+          ],
+          [
+            "side_diagonal.albedo_mae.max",
+            "<=",
+            "0.035"
+          ],
+          [
+            "side_diagonal.albedo_mae.mean",
+            "<=",
+            "0.025"
+          ],
+          [
+            "side_diagonal.area_ratio.max",
+            "in",
+            "[0.985, 1.015]"
+          ],
+          [
+            "side_diagonal.area_ratio.min",
+            "in",
+            "[0.985, 1.015]"
+          ],
+          [
+            "side_diagonal.backface_front_hit_delta.max",
+            "<=",
+            "0.01"
+          ],
+          [
+            "side_diagonal.boundary_fscore.min",
+            ">=",
+            "0.95"
+          ],
+          [
+            "side_diagonal.candidate_extra_fraction.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "side_diagonal.depth_p95.max",
+            "<=",
+            "0.01"
+          ],
+          [
+            "side_diagonal.normal_cos_mean.mean",
+            ">=",
+            "0.985"
+          ],
+          [
+            "side_diagonal.odd_hit_abs_delta.max",
+            "<=",
+            "0.01"
+          ],
+          [
+            "side_diagonal.reference_missing_fraction.max",
+            "<=",
+            "0.02"
+          ],
+          [
+            "side_diagonal.shaded_rgb_mae.max",
+            "<=",
+            "0.045"
+          ],
+          [
+            "side_diagonal.shaded_rgb_mae.mean",
+            "<=",
+            "0.03"
+          ],
+          [
+            "side_diagonal.shaded_rgb_mae_union.max",
+            "<=",
+            "0.06"
+          ],
+          [
+            "side_diagonal.shaded_rgb_mae_union.mean",
+            "<=",
+            "0.04"
+          ],
+          [
+            "side_diagonal.shaded_ssim.min",
+            ">=",
+            "0.92"
+          ],
+          [
+            "side_diagonal.silhouette_iou.min",
+            ">=",
+            "0.97"
+          ],
+          [
+            "side_diagonal.single_hit_abs_delta.max",
+            "<=",
+            "0.01"
+          ],
+          [
+            "side_diagonal.thick_ray_fraction.max",
+            "<=",
+            "0.03"
+          ],
+          [
+            "side_diagonal.thickness_ratio_median.mean",
+            "in",
+            "[0.97, 1.03]"
+          ],
+          [
+            "side_diagonal.thickness_ratio_p05.min",
+            ">=",
+            "0.8"
+          ],
+          [
+            "side_diagonal.thickness_ratio_p95.max",
+            "<=",
+            "1.2"
+          ],
+          [
+            "side_diagonal.thickness_valid_pixel_fraction.min",
+            ">=",
+            "0.45"
+          ],
+          [
+            "side_diagonal.thin_ray_fraction.max",
+            "<=",
+            "0.03"
+          ],
+          [
+            "surface_distance.available",
+            "==",
+            "1.0"
+          ],
+          [
+            "surface_distance.candidate_extra_0p0025",
+            "<=",
+            "0.001"
+          ],
+          [
+            "surface_distance.candidate_to_reference.p95",
+            "<=",
+            "0.00025"
+          ],
+          [
+            "surface_distance.reference_missing_0p0025",
+            "<=",
+            "0.001"
+          ],
+          [
+            "surface_distance.reference_to_candidate.p95",
+            "<=",
+            "0.00025"
+          ],
+          [
+            "surface_distance.symmetric.mean",
+            "<=",
+            "5e-05"
+          ],
+          [
+            "surface_distance.symmetric.p95",
+            "<=",
+            "0.00025"
+          ],
+          [
+            "surface_distance.symmetric.p99",
+            "<=",
+            "0.0005"
+          ]
+        ]
+      },
+      {
+        "expected": "all verdict values finite",
+        "name": "exact horizon orientation/winding gate.finite_gate_values",
+        "observed": []
+      },
+      {
+        "expected": "4.2.0",
+        "name": "browser viewer.model_viewer_version",
+        "observed": "4.2.0"
+      },
+      {
+        "expected": "https://unpkg.com/@google/model-viewer@4.2.0/dist/model-viewer.min.js",
+        "name": "browser viewer.model_viewer_script_url",
+        "observed": "https://unpkg.com/@google/model-viewer@4.2.0/dist/model-viewer.min.js"
+      },
+      {
+        "expected": [
+          0.0,
+          45.0,
+          90.0,
+          135.0,
+          180.0,
+          225.0,
+          270.0,
+          315.0
+        ],
+        "name": "browser viewer.angles",
+        "observed": [
+          0.0,
+          45.0,
+          90.0,
+          135.0,
+          180.0,
+          225.0,
+          270.0,
+          315.0
+        ]
+      },
+      {
+        "expected": [
+          "75deg"
+        ],
+        "name": "browser viewer.elevations",
+        "observed": [
+          "75deg"
+        ]
+      },
+      {
+        "expected": "125%",
+        "name": "browser viewer.distance",
+        "observed": "125%"
+      },
+      {
+        "expected": "30deg",
+        "name": "browser viewer.field_of_view",
+        "observed": "30deg"
+      },
+      {
+        "expected": "neutral",
+        "name": "browser viewer.environment_image",
+        "observed": "neutral"
+      },
+      {
+        "expected": "1",
+        "name": "browser viewer.exposure",
+        "observed": "1"
+      },
+      {
+        "expected": "0",
+        "name": "browser viewer.shadow_intensity",
+        "observed": "0"
+      },
+      {
+        "expected": 0.065,
+        "name": "browser viewer.foreground_threshold",
+        "observed": 0.065
+      },
+      {
+        "expected": 8,
+        "name": "browser viewer.edge_crop_px",
+        "observed": 8
+      },
+      {
+        "expected": 8,
+        "name": "browser viewer.max_align_shift_px",
+        "observed": 8
+      },
+      {
+        "expected": {
+          "height": 680,
+          "width": 1200
+        },
+        "name": "browser viewer.viewport",
+        "observed": {
+          "height": 680,
+          "width": 1200
+        }
+      },
+      {
+        "expected": "recorded",
+        "name": "browser viewer.browser_runtime.browser_version",
+        "observed": "148.0.7778.179"
+      },
+      {
+        "expected": "recorded",
+        "name": "browser viewer.browser_runtime.user_agent",
+        "observed": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+      },
+      {
+        "expected": "recorded",
+        "name": "browser viewer.browser_runtime.navigator_platform",
+        "observed": "MacIntel"
+      },
+      {
+        "expected": "recorded",
+        "name": "browser viewer.browser_runtime.device_pixel_ratio",
+        "observed": 1
+      },
+      {
+        "expected": "recorded",
+        "name": "browser viewer.browser_runtime.webgl_renderer",
+        "observed": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4 Pro, Unspecified Version)"
+      },
+      {
+        "expected": "recorded",
+        "name": "browser viewer.browser_runtime.webgl_vendor",
+        "observed": "Google Inc. (Apple)"
+      },
+      {
+        "expected": [
+          [
+            "viewer.foreground_iou.mean",
+            ">=",
+            "0.97"
+          ],
+          [
+            "viewer.foreground_iou.min",
+            ">=",
+            "0.95"
+          ],
+          [
+            "viewer.overlap_pixel_mae.max",
+            "<=",
+            "0.07"
+          ],
+          [
+            "viewer.overlap_pixel_mae.mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.overlap_pixel_rgb_mae.max_channel_mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.overlap_pixel_rgb_mae.max_view_channel",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_crop_ssim.mean",
+            ">=",
+            "0.9"
+          ],
+          [
+            "viewer.union_crop_ssim.min",
+            ">=",
+            "0.85"
+          ],
+          [
+            "viewer.union_pixel_mae.max",
+            "<=",
+            "0.08"
+          ],
+          [
+            "viewer.union_pixel_mae.mean",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_pixel_p95.max",
+            "<=",
+            "0.24"
+          ],
+          [
+            "viewer.union_pixel_p95.mean",
+            "<=",
+            "0.18"
+          ],
+          [
+            "viewer.union_pixel_p99.max",
+            "<=",
+            "0.42"
+          ],
+          [
+            "viewer.union_pixel_p99.mean",
+            "<=",
+            "0.32"
+          ],
+          [
+            "viewer.union_pixel_rgb_mae.max_channel_mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.union_pixel_rgb_mae.max_view_channel",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_tile_mae_max.max",
+            "<=",
+            "0.16"
+          ],
+          [
+            "viewer.union_tile_mae_max.mean",
+            "<=",
+            "0.11"
+          ],
+          [
+            "viewer.union_tile_mae_p90.max",
+            "<=",
+            "0.13"
+          ],
+          [
+            "viewer.union_tile_mae_p90.mean",
+            "<=",
+            "0.085"
+          ]
+        ],
+        "name": "browser viewer.gate_signature",
+        "observed": [
+          [
+            "viewer.foreground_iou.mean",
+            ">=",
+            "0.97"
+          ],
+          [
+            "viewer.foreground_iou.min",
+            ">=",
+            "0.95"
+          ],
+          [
+            "viewer.overlap_pixel_mae.max",
+            "<=",
+            "0.07"
+          ],
+          [
+            "viewer.overlap_pixel_mae.mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.overlap_pixel_rgb_mae.max_channel_mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.overlap_pixel_rgb_mae.max_view_channel",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_crop_ssim.mean",
+            ">=",
+            "0.9"
+          ],
+          [
+            "viewer.union_crop_ssim.min",
+            ">=",
+            "0.85"
+          ],
+          [
+            "viewer.union_pixel_mae.max",
+            "<=",
+            "0.08"
+          ],
+          [
+            "viewer.union_pixel_mae.mean",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_pixel_p95.max",
+            "<=",
+            "0.24"
+          ],
+          [
+            "viewer.union_pixel_p95.mean",
+            "<=",
+            "0.18"
+          ],
+          [
+            "viewer.union_pixel_p99.max",
+            "<=",
+            "0.42"
+          ],
+          [
+            "viewer.union_pixel_p99.mean",
+            "<=",
+            "0.32"
+          ],
+          [
+            "viewer.union_pixel_rgb_mae.max_channel_mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.union_pixel_rgb_mae.max_view_channel",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_tile_mae_max.max",
+            "<=",
+            "0.16"
+          ],
+          [
+            "viewer.union_tile_mae_max.mean",
+            "<=",
+            "0.11"
+          ],
+          [
+            "viewer.union_tile_mae_p90.max",
+            "<=",
+            "0.13"
+          ],
+          [
+            "viewer.union_tile_mae_p90.mean",
+            "<=",
+            "0.085"
+          ]
+        ]
+      },
+      {
+        "expected": "all verdict values finite",
+        "name": "browser viewer.finite_gate_values",
+        "observed": []
+      },
+      {
+        "expected": "4.2.0",
+        "name": "browser multi-elevation.model_viewer_version",
+        "observed": "4.2.0"
+      },
+      {
+        "expected": "https://unpkg.com/@google/model-viewer@4.2.0/dist/model-viewer.min.js",
+        "name": "browser multi-elevation.model_viewer_script_url",
+        "observed": "https://unpkg.com/@google/model-viewer@4.2.0/dist/model-viewer.min.js"
+      },
+      {
+        "expected": [
+          0.0,
+          45.0,
+          90.0,
+          135.0,
+          180.0,
+          225.0,
+          270.0,
+          315.0
+        ],
+        "name": "browser multi-elevation.angles",
+        "observed": [
+          0.0,
+          45.0,
+          90.0,
+          135.0,
+          180.0,
+          225.0,
+          270.0,
+          315.0
+        ]
+      },
+      {
+        "expected": [
+          "65deg",
+          "75deg",
+          "85deg",
+          "95deg",
+          "105deg",
+          "115deg"
+        ],
+        "name": "browser multi-elevation.elevations",
+        "observed": [
+          "65deg",
+          "75deg",
+          "85deg",
+          "95deg",
+          "105deg",
+          "115deg"
+        ]
+      },
+      {
+        "expected": "125%",
+        "name": "browser multi-elevation.distance",
+        "observed": "125%"
+      },
+      {
+        "expected": "30deg",
+        "name": "browser multi-elevation.field_of_view",
+        "observed": "30deg"
+      },
+      {
+        "expected": "neutral",
+        "name": "browser multi-elevation.environment_image",
+        "observed": "neutral"
+      },
+      {
+        "expected": "1",
+        "name": "browser multi-elevation.exposure",
+        "observed": "1"
+      },
+      {
+        "expected": "0",
+        "name": "browser multi-elevation.shadow_intensity",
+        "observed": "0"
+      },
+      {
+        "expected": 0.065,
+        "name": "browser multi-elevation.foreground_threshold",
+        "observed": 0.065
+      },
+      {
+        "expected": 8,
+        "name": "browser multi-elevation.edge_crop_px",
+        "observed": 8
+      },
+      {
+        "expected": 8,
+        "name": "browser multi-elevation.max_align_shift_px",
+        "observed": 8
+      },
+      {
+        "expected": {
+          "height": 680,
+          "width": 1200
+        },
+        "name": "browser multi-elevation.viewport",
+        "observed": {
+          "height": 680,
+          "width": 1200
+        }
+      },
+      {
+        "expected": "recorded",
+        "name": "browser multi-elevation.browser_runtime.browser_version",
+        "observed": "148.0.7778.179"
+      },
+      {
+        "expected": "recorded",
+        "name": "browser multi-elevation.browser_runtime.user_agent",
+        "observed": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+      },
+      {
+        "expected": "recorded",
+        "name": "browser multi-elevation.browser_runtime.navigator_platform",
+        "observed": "MacIntel"
+      },
+      {
+        "expected": "recorded",
+        "name": "browser multi-elevation.browser_runtime.device_pixel_ratio",
+        "observed": 1
+      },
+      {
+        "expected": "recorded",
+        "name": "browser multi-elevation.browser_runtime.webgl_renderer",
+        "observed": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4 Pro, Unspecified Version)"
+      },
+      {
+        "expected": "recorded",
+        "name": "browser multi-elevation.browser_runtime.webgl_vendor",
+        "observed": "Google Inc. (Apple)"
+      },
+      {
+        "expected": [
+          [
+            "viewer.foreground_iou.mean",
+            ">=",
+            "0.97"
+          ],
+          [
+            "viewer.foreground_iou.min",
+            ">=",
+            "0.95"
+          ],
+          [
+            "viewer.overlap_pixel_mae.max",
+            "<=",
+            "0.07"
+          ],
+          [
+            "viewer.overlap_pixel_mae.mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.overlap_pixel_rgb_mae.max_channel_mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.overlap_pixel_rgb_mae.max_view_channel",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_crop_ssim.mean",
+            ">=",
+            "0.9"
+          ],
+          [
+            "viewer.union_crop_ssim.min",
+            ">=",
+            "0.85"
+          ],
+          [
+            "viewer.union_pixel_mae.max",
+            "<=",
+            "0.08"
+          ],
+          [
+            "viewer.union_pixel_mae.mean",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_pixel_p95.max",
+            "<=",
+            "0.24"
+          ],
+          [
+            "viewer.union_pixel_p95.mean",
+            "<=",
+            "0.18"
+          ],
+          [
+            "viewer.union_pixel_p99.max",
+            "<=",
+            "0.42"
+          ],
+          [
+            "viewer.union_pixel_p99.mean",
+            "<=",
+            "0.32"
+          ],
+          [
+            "viewer.union_pixel_rgb_mae.max_channel_mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.union_pixel_rgb_mae.max_view_channel",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_tile_mae_max.max",
+            "<=",
+            "0.16"
+          ],
+          [
+            "viewer.union_tile_mae_max.mean",
+            "<=",
+            "0.11"
+          ],
+          [
+            "viewer.union_tile_mae_p90.max",
+            "<=",
+            "0.13"
+          ],
+          [
+            "viewer.union_tile_mae_p90.mean",
+            "<=",
+            "0.085"
+          ]
+        ],
+        "name": "browser multi-elevation.gate_signature",
+        "observed": [
+          [
+            "viewer.foreground_iou.mean",
+            ">=",
+            "0.97"
+          ],
+          [
+            "viewer.foreground_iou.min",
+            ">=",
+            "0.95"
+          ],
+          [
+            "viewer.overlap_pixel_mae.max",
+            "<=",
+            "0.07"
+          ],
+          [
+            "viewer.overlap_pixel_mae.mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.overlap_pixel_rgb_mae.max_channel_mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.overlap_pixel_rgb_mae.max_view_channel",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_crop_ssim.mean",
+            ">=",
+            "0.9"
+          ],
+          [
+            "viewer.union_crop_ssim.min",
+            ">=",
+            "0.85"
+          ],
+          [
+            "viewer.union_pixel_mae.max",
+            "<=",
+            "0.08"
+          ],
+          [
+            "viewer.union_pixel_mae.mean",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_pixel_p95.max",
+            "<=",
+            "0.24"
+          ],
+          [
+            "viewer.union_pixel_p95.mean",
+            "<=",
+            "0.18"
+          ],
+          [
+            "viewer.union_pixel_p99.max",
+            "<=",
+            "0.42"
+          ],
+          [
+            "viewer.union_pixel_p99.mean",
+            "<=",
+            "0.32"
+          ],
+          [
+            "viewer.union_pixel_rgb_mae.max_channel_mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.union_pixel_rgb_mae.max_view_channel",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_tile_mae_max.max",
+            "<=",
+            "0.16"
+          ],
+          [
+            "viewer.union_tile_mae_max.mean",
+            "<=",
+            "0.11"
+          ],
+          [
+            "viewer.union_tile_mae_p90.max",
+            "<=",
+            "0.13"
+          ],
+          [
+            "viewer.union_tile_mae_p90.mean",
+            "<=",
+            "0.085"
+          ]
+        ]
+      },
+      {
+        "expected": "all verdict values finite",
+        "name": "browser multi-elevation.finite_gate_values",
+        "observed": []
+      },
+      {
+        "expected": "4.2.0",
+        "name": "browser close-up.model_viewer_version",
+        "observed": "4.2.0"
+      },
+      {
+        "expected": "https://unpkg.com/@google/model-viewer@4.2.0/dist/model-viewer.min.js",
+        "name": "browser close-up.model_viewer_script_url",
+        "observed": "https://unpkg.com/@google/model-viewer@4.2.0/dist/model-viewer.min.js"
+      },
+      {
+        "expected": [
+          0.0,
+          45.0,
+          90.0,
+          135.0,
+          180.0,
+          225.0,
+          270.0,
+          315.0
+        ],
+        "name": "browser close-up.angles",
+        "observed": [
+          0.0,
+          45.0,
+          90.0,
+          135.0,
+          180.0,
+          225.0,
+          270.0,
+          315.0
+        ]
+      },
+      {
+        "expected": [
+          "75deg"
+        ],
+        "name": "browser close-up.elevations",
+        "observed": [
+          "75deg"
+        ]
+      },
+      {
+        "expected": "80%",
+        "name": "browser close-up.distance",
+        "observed": "80%"
+      },
+      {
+        "expected": "20deg",
+        "name": "browser close-up.field_of_view",
+        "observed": "20deg"
+      },
+      {
+        "expected": "neutral",
+        "name": "browser close-up.environment_image",
+        "observed": "neutral"
+      },
+      {
+        "expected": "1",
+        "name": "browser close-up.exposure",
+        "observed": "1"
+      },
+      {
+        "expected": "0",
+        "name": "browser close-up.shadow_intensity",
+        "observed": "0"
+      },
+      {
+        "expected": 0.065,
+        "name": "browser close-up.foreground_threshold",
+        "observed": 0.065
+      },
+      {
+        "expected": 8,
+        "name": "browser close-up.edge_crop_px",
+        "observed": 8
+      },
+      {
+        "expected": 8,
+        "name": "browser close-up.max_align_shift_px",
+        "observed": 8
+      },
+      {
+        "expected": {
+          "height": 680,
+          "width": 1200
+        },
+        "name": "browser close-up.viewport",
+        "observed": {
+          "height": 680,
+          "width": 1200
+        }
+      },
+      {
+        "expected": "recorded",
+        "name": "browser close-up.browser_runtime.browser_version",
+        "observed": "148.0.7778.179"
+      },
+      {
+        "expected": "recorded",
+        "name": "browser close-up.browser_runtime.user_agent",
+        "observed": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+      },
+      {
+        "expected": "recorded",
+        "name": "browser close-up.browser_runtime.navigator_platform",
+        "observed": "MacIntel"
+      },
+      {
+        "expected": "recorded",
+        "name": "browser close-up.browser_runtime.device_pixel_ratio",
+        "observed": 1
+      },
+      {
+        "expected": "recorded",
+        "name": "browser close-up.browser_runtime.webgl_renderer",
+        "observed": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4 Pro, Unspecified Version)"
+      },
+      {
+        "expected": "recorded",
+        "name": "browser close-up.browser_runtime.webgl_vendor",
+        "observed": "Google Inc. (Apple)"
+      },
+      {
+        "expected": [
+          [
+            "viewer.foreground_iou.mean",
+            ">=",
+            "0.97"
+          ],
+          [
+            "viewer.foreground_iou.min",
+            ">=",
+            "0.95"
+          ],
+          [
+            "viewer.overlap_pixel_mae.max",
+            "<=",
+            "0.07"
+          ],
+          [
+            "viewer.overlap_pixel_mae.mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.overlap_pixel_rgb_mae.max_channel_mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.overlap_pixel_rgb_mae.max_view_channel",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_crop_ssim.mean",
+            ">=",
+            "0.9"
+          ],
+          [
+            "viewer.union_crop_ssim.min",
+            ">=",
+            "0.85"
+          ],
+          [
+            "viewer.union_pixel_mae.max",
+            "<=",
+            "0.08"
+          ],
+          [
+            "viewer.union_pixel_mae.mean",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_pixel_p95.max",
+            "<=",
+            "0.24"
+          ],
+          [
+            "viewer.union_pixel_p95.mean",
+            "<=",
+            "0.18"
+          ],
+          [
+            "viewer.union_pixel_p99.max",
+            "<=",
+            "0.42"
+          ],
+          [
+            "viewer.union_pixel_p99.mean",
+            "<=",
+            "0.32"
+          ],
+          [
+            "viewer.union_pixel_rgb_mae.max_channel_mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.union_pixel_rgb_mae.max_view_channel",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_tile_mae_max.max",
+            "<=",
+            "0.16"
+          ],
+          [
+            "viewer.union_tile_mae_max.mean",
+            "<=",
+            "0.11"
+          ],
+          [
+            "viewer.union_tile_mae_p90.max",
+            "<=",
+            "0.13"
+          ],
+          [
+            "viewer.union_tile_mae_p90.mean",
+            "<=",
+            "0.085"
+          ]
+        ],
+        "name": "browser close-up.gate_signature",
+        "observed": [
+          [
+            "viewer.foreground_iou.mean",
+            ">=",
+            "0.97"
+          ],
+          [
+            "viewer.foreground_iou.min",
+            ">=",
+            "0.95"
+          ],
+          [
+            "viewer.overlap_pixel_mae.max",
+            "<=",
+            "0.07"
+          ],
+          [
+            "viewer.overlap_pixel_mae.mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.overlap_pixel_rgb_mae.max_channel_mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.overlap_pixel_rgb_mae.max_view_channel",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_crop_ssim.mean",
+            ">=",
+            "0.9"
+          ],
+          [
+            "viewer.union_crop_ssim.min",
+            ">=",
+            "0.85"
+          ],
+          [
+            "viewer.union_pixel_mae.max",
+            "<=",
+            "0.08"
+          ],
+          [
+            "viewer.union_pixel_mae.mean",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_pixel_p95.max",
+            "<=",
+            "0.24"
+          ],
+          [
+            "viewer.union_pixel_p95.mean",
+            "<=",
+            "0.18"
+          ],
+          [
+            "viewer.union_pixel_p99.max",
+            "<=",
+            "0.42"
+          ],
+          [
+            "viewer.union_pixel_p99.mean",
+            "<=",
+            "0.32"
+          ],
+          [
+            "viewer.union_pixel_rgb_mae.max_channel_mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.union_pixel_rgb_mae.max_view_channel",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_tile_mae_max.max",
+            "<=",
+            "0.16"
+          ],
+          [
+            "viewer.union_tile_mae_max.mean",
+            "<=",
+            "0.11"
+          ],
+          [
+            "viewer.union_tile_mae_p90.max",
+            "<=",
+            "0.13"
+          ],
+          [
+            "viewer.union_tile_mae_p90.mean",
+            "<=",
+            "0.085"
+          ]
+        ]
+      },
+      {
+        "expected": "all verdict values finite",
+        "name": "browser close-up.finite_gate_values",
+        "observed": []
+      },
+      {
+        "expected": "4.2.0",
+        "name": "browser specular.model_viewer_version",
+        "observed": "4.2.0"
+      },
+      {
+        "expected": "https://unpkg.com/@google/model-viewer@4.2.0/dist/model-viewer.min.js",
+        "name": "browser specular.model_viewer_script_url",
+        "observed": "https://unpkg.com/@google/model-viewer@4.2.0/dist/model-viewer.min.js"
+      },
+      {
+        "expected": [
+          0.0,
+          45.0,
+          90.0,
+          135.0,
+          180.0,
+          225.0,
+          270.0,
+          315.0
+        ],
+        "name": "browser specular.angles",
+        "observed": [
+          0.0,
+          45.0,
+          90.0,
+          135.0,
+          180.0,
+          225.0,
+          270.0,
+          315.0
+        ]
+      },
+      {
+        "expected": [
+          "75deg"
+        ],
+        "name": "browser specular.elevations",
+        "observed": [
+          "75deg"
+        ]
+      },
+      {
+        "expected": "125%",
+        "name": "browser specular.distance",
+        "observed": "125%"
+      },
+      {
+        "expected": "30deg",
+        "name": "browser specular.field_of_view",
+        "observed": "30deg"
+      },
+      {
+        "expected": "legacy",
+        "name": "browser specular.environment_image",
+        "observed": "legacy"
+      },
+      {
+        "expected": "1",
+        "name": "browser specular.exposure",
+        "observed": "1"
+      },
+      {
+        "expected": "0",
+        "name": "browser specular.shadow_intensity",
+        "observed": "0"
+      },
+      {
+        "expected": 0.065,
+        "name": "browser specular.foreground_threshold",
+        "observed": 0.065
+      },
+      {
+        "expected": 8,
+        "name": "browser specular.edge_crop_px",
+        "observed": 8
+      },
+      {
+        "expected": 8,
+        "name": "browser specular.max_align_shift_px",
+        "observed": 8
+      },
+      {
+        "expected": {
+          "height": 680,
+          "width": 1200
+        },
+        "name": "browser specular.viewport",
+        "observed": {
+          "height": 680,
+          "width": 1200
+        }
+      },
+      {
+        "expected": "recorded",
+        "name": "browser specular.browser_runtime.browser_version",
+        "observed": "148.0.7778.179"
+      },
+      {
+        "expected": "recorded",
+        "name": "browser specular.browser_runtime.user_agent",
+        "observed": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+      },
+      {
+        "expected": "recorded",
+        "name": "browser specular.browser_runtime.navigator_platform",
+        "observed": "MacIntel"
+      },
+      {
+        "expected": "recorded",
+        "name": "browser specular.browser_runtime.device_pixel_ratio",
+        "observed": 1
+      },
+      {
+        "expected": "recorded",
+        "name": "browser specular.browser_runtime.webgl_renderer",
+        "observed": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4 Pro, Unspecified Version)"
+      },
+      {
+        "expected": "recorded",
+        "name": "browser specular.browser_runtime.webgl_vendor",
+        "observed": "Google Inc. (Apple)"
+      },
+      {
+        "expected": [
+          [
+            "viewer.foreground_iou.mean",
+            ">=",
+            "0.97"
+          ],
+          [
+            "viewer.foreground_iou.min",
+            ">=",
+            "0.95"
+          ],
+          [
+            "viewer.overlap_pixel_mae.max",
+            "<=",
+            "0.07"
+          ],
+          [
+            "viewer.overlap_pixel_mae.mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.overlap_pixel_rgb_mae.max_channel_mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.overlap_pixel_rgb_mae.max_view_channel",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_crop_ssim.mean",
+            ">=",
+            "0.9"
+          ],
+          [
+            "viewer.union_crop_ssim.min",
+            ">=",
+            "0.85"
+          ],
+          [
+            "viewer.union_pixel_mae.max",
+            "<=",
+            "0.08"
+          ],
+          [
+            "viewer.union_pixel_mae.mean",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_pixel_p95.max",
+            "<=",
+            "0.24"
+          ],
+          [
+            "viewer.union_pixel_p95.mean",
+            "<=",
+            "0.18"
+          ],
+          [
+            "viewer.union_pixel_p99.max",
+            "<=",
+            "0.42"
+          ],
+          [
+            "viewer.union_pixel_p99.mean",
+            "<=",
+            "0.32"
+          ],
+          [
+            "viewer.union_pixel_rgb_mae.max_channel_mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.union_pixel_rgb_mae.max_view_channel",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_tile_mae_max.max",
+            "<=",
+            "0.16"
+          ],
+          [
+            "viewer.union_tile_mae_max.mean",
+            "<=",
+            "0.11"
+          ],
+          [
+            "viewer.union_tile_mae_p90.max",
+            "<=",
+            "0.13"
+          ],
+          [
+            "viewer.union_tile_mae_p90.mean",
+            "<=",
+            "0.085"
+          ]
+        ],
+        "name": "browser specular.gate_signature",
+        "observed": [
+          [
+            "viewer.foreground_iou.mean",
+            ">=",
+            "0.97"
+          ],
+          [
+            "viewer.foreground_iou.min",
+            ">=",
+            "0.95"
+          ],
+          [
+            "viewer.overlap_pixel_mae.max",
+            "<=",
+            "0.07"
+          ],
+          [
+            "viewer.overlap_pixel_mae.mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.overlap_pixel_rgb_mae.max_channel_mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.overlap_pixel_rgb_mae.max_view_channel",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_crop_ssim.mean",
+            ">=",
+            "0.9"
+          ],
+          [
+            "viewer.union_crop_ssim.min",
+            ">=",
+            "0.85"
+          ],
+          [
+            "viewer.union_pixel_mae.max",
+            "<=",
+            "0.08"
+          ],
+          [
+            "viewer.union_pixel_mae.mean",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_pixel_p95.max",
+            "<=",
+            "0.24"
+          ],
+          [
+            "viewer.union_pixel_p95.mean",
+            "<=",
+            "0.18"
+          ],
+          [
+            "viewer.union_pixel_p99.max",
+            "<=",
+            "0.42"
+          ],
+          [
+            "viewer.union_pixel_p99.mean",
+            "<=",
+            "0.32"
+          ],
+          [
+            "viewer.union_pixel_rgb_mae.max_channel_mean",
+            "<=",
+            "0.05"
+          ],
+          [
+            "viewer.union_pixel_rgb_mae.max_view_channel",
+            "<=",
+            "0.06"
+          ],
+          [
+            "viewer.union_tile_mae_max.max",
+            "<=",
+            "0.16"
+          ],
+          [
+            "viewer.union_tile_mae_max.mean",
+            "<=",
+            "0.11"
+          ],
+          [
+            "viewer.union_tile_mae_p90.max",
+            "<=",
+            "0.13"
+          ],
+          [
+            "viewer.union_tile_mae_p90.mean",
+            "<=",
+            "0.085"
+          ]
+        ]
+      },
+      {
+        "expected": "all verdict values finite",
+        "name": "browser specular.finite_gate_values",
+        "observed": []
+      }
+    ],
+    "status": "PASS"
+  },
+  "required_gates": [
+    {
+      "failure_count": 0,
+      "name": "provenance/locked-run parameters",
+      "path": null,
+      "status": "PASS",
+      "top_failures": [],
+      "warning_count": null
+    },
+    {
+      "failure_count": 0,
+      "name": "GLB validation",
+      "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096_glb_validation/glb_validation.json",
+      "status": "PASS",
+      "top_failures": [],
+      "top_warnings": [],
+      "warning_count": 0
+    },
+    {
+      "failure_count": 0,
+      "ignored_failure_names": [],
+      "ignored_failures": [],
+      "name": "GLB/material metadata",
+      "pass_count": 25,
+      "path": "<repo>/artifacts/runs/m117_native_cleanup_simplify_topology_ablation/skip_cleanup_tex4096_material_compare/material_diff.json",
+      "source_failure_count": 0,
+      "source_pass_count": 25,
+      "source_status": "PASS",
+      "status": "PASS",
+      "top_failures": [],
+      "top_warnings": [],
+      "warning_count": 0
+    },
+    {
+      "failure_count": 0,
+      "ignored_failure_names": [],
+      "ignored_failures": [],
+      "name": "software multiview geometry/texture",
+      "pass_count": 42,
+      "path": "<repo>/artifacts/runs/m119_strict_gate_grounding_support_geometry/textured_m117_skip_cleanup_4m_all8/multiview_parity_report.json",
+      "source_failure_count": 0,
+      "source_pass_count": 42,
+      "source_status": "PASS",
+      "status": "PASS",
+      "top_failures": [],
+      "top_warnings": [],
+      "warning_count": 0
+    },
+    {
+      "failure_count": 0,
+      "ignored_failure_names": [],
+      "ignored_failures": [],
+      "name": "sampled high/low support screen",
+      "pass_count": 42,
+      "path": "<repo>/artifacts/runs/m121_final_candidate_provenance_m117_4m/highlow_4m/multiview_parity_report.json",
+      "source_failure_count": 0,
+      "source_pass_count": 42,
+      "source_status": "PASS",
+      "status": "PASS",
+      "top_failures": [],
+      "top_warnings": [],
+      "warning_count": 0
+    },
+    {
+      "failure_count": 0,
+      "ignored_failure_names": [],
+      "ignored_failures": [],
+      "name": "browser model-viewer",
+      "pass_count": 20,
+      "path": "<repo>/artifacts/runs/m123_final_candidate_m117_m122_suite/model_viewer_default/model_viewer_gate_report.json",
+      "source_failure_count": 0,
+      "source_pass_count": 20,
+      "source_status": "PASS",
+      "status": "PASS",
+      "top_failures": [],
+      "top_warnings": [],
+      "warning_count": 0
+    },
+    {
+      "failure_count": 0,
+      "ignored_failure_names": [],
+      "ignored_failures": [],
+      "name": "browser multi-elevation model-viewer",
+      "pass_count": 20,
+      "path": "<repo>/artifacts/runs/m123_final_candidate_m117_m122_suite/model_viewer_multielev/model_viewer_gate_report.json",
+      "source_failure_count": 0,
+      "source_pass_count": 20,
+      "source_status": "PASS",
+      "status": "PASS",
+      "top_failures": [],
+      "top_warnings": [],
+      "warning_count": 0
+    },
+    {
+      "failure_count": 0,
+      "ignored_failure_names": [
+        "side_diagonal.normal_cos_mean.mean"
+      ],
+      "ignored_failures": [
+        {
+          "name": "side_diagonal.normal_cos_mean.mean",
+          "operator": ">=",
+          "threshold": 0.985,
+          "value": 0.9769212206204733
+        }
+      ],
+      "name": "exact horizon orientation/winding gate",
+      "pass_count": 48,
+      "path": "<repo>/artifacts/runs/m123_final_candidate_m117_m122_suite/orientation_exact_horizon_4m_metadata/multiview_parity_report.json",
+      "source_failure_count": 1,
+      "source_pass_count": 48,
+      "source_status": "FAIL",
+      "status": "PASS",
+      "top_failures": [],
+      "top_warnings": [
+        {
+          "classification": "diagnostic_not_hard_gate",
+          "name": "side_diagonal.normal_cos_mean.mean",
+          "threshold": 0.985,
+          "value": 0.9769212206204733
+        }
+      ],
+      "warning_count": 1
+    },
+    {
+      "failure_count": 0,
+      "name": "stored vertex normal attribution",
+      "pass_count": 5,
+      "path": "<repo>/artifacts/runs/m122_exact_normal_realization/m117_normal_attribution/exact_normal_gap_diagnostic.json",
+      "status": "PASS",
+      "top_failures": [],
+      "top_warnings": [
+        {
+          "classification": "diagnostic_not_hard_gate",
+          "computed_vertex_vs_computed_vertex": 0.9793330729007721,
+          "face_vs_face": 0.9769212206204733,
+          "name": "side_diagonal.normal_cos_mean.mean",
+          "stored_vertex_vs_stored_vertex": 0.9900419414043427
+        }
+      ],
+      "warning_count": 1
+    },
+    {
+      "diagnostic_status": "FAIL",
+      "failure_count": 0,
+      "name": "reference-geometry texture-field diagnostic present",
+      "path": "<repo>/artifacts/runs/m118_m117_residual_attribution_matrix/m117_material_on_cuda_shell_sampled/multiview_parity_report.json",
+      "status": "PASS",
+      "top_failures": [],
+      "warning_count": null
+    },
+    {
+      "failure_count": 0,
+      "name": "texture atlas/MR content",
+      "path": "<repo>/artifacts/runs/m123_final_candidate_m117_m122_suite/texture_compare_m117_vs_m19/texture_compare_report.json",
+      "status": "PASS",
+      "top_failures": [],
+      "warning_count": 0
+    },
+    {
+      "failure_count": 0,
+      "ignored_failure_names": [],
+      "ignored_failures": [],
+      "name": "browser close-up texture/detail",
+      "pass_count": 20,
+      "path": "<repo>/artifacts/runs/m123_final_candidate_m117_m122_suite/model_viewer_closeup/model_viewer_gate_report.json",
+      "source_failure_count": 0,
+      "source_pass_count": 20,
+      "source_status": "PASS",
+      "status": "PASS",
+      "top_failures": [],
+      "top_warnings": [],
+      "warning_count": 0
+    },
+    {
+      "failure_count": 0,
+      "ignored_failure_names": [],
+      "ignored_failures": [],
+      "name": "browser specular/material response",
+      "pass_count": 20,
+      "path": "<repo>/artifacts/runs/m123_final_candidate_m117_m122_suite/model_viewer_specular/model_viewer_gate_report.json",
+      "source_failure_count": 0,
+      "source_pass_count": 20,
+      "source_status": "PASS",
+      "status": "PASS",
+      "top_failures": [],
+      "top_warnings": [],
+      "warning_count": 0
+    }
+  ],
+  "texture_attribution": {
+    "bake_roundtrip": {
+      "base_color_channel_corr": [
+        0.9810662248070117,
+        0.9810019652317759,
+        0.98074918287718
+      ],
+      "base_color_mae": 0.00956426840275526,
+      "interpretation": "If this passes while reference-geometry Mac voxels fail, the sparse bake operator is not the primary blocker.",
+      "metallic_roughness_mae": 0.0009450351935811341,
+      "neighbor_coverage": 1.0,
+      "path": "<repo>/artifacts/runs/m50b_cuda_texture_bake_roundtrip_1024/roundtrip_report.json",
+      "status": "PASS"
+    },
+    "reference_geometry": {
+      "failure_count": 4,
+      "geometry_failure_count": 0,
+      "interpretation": "Texture field is implicated if geometry_failure_count is 0 and texture_failure_count is nonzero.",
+      "path": "<repo>/artifacts/runs/m118_m117_residual_attribution_matrix/m117_material_on_cuda_shell_sampled/multiview_parity_report.json",
+      "status": "FAIL",
+      "texture_failure_count": 4,
+      "top_failures": [
+        {
+          "name": "all_views.albedo_mae.mean",
+          "operator": "<=",
+          "threshold": 0.025,
+          "value": 0.21640939079225063
+        },
+        {
+          "name": "all_views.albedo_mae.max",
+          "operator": "<=",
+          "threshold": 0.04,
+          "value": 0.22188356518745422
+        },
+        {
+          "name": "side_diagonal.albedo_mae.mean",
+          "operator": "<=",
+          "threshold": 0.025,
+          "value": 0.21588987112045288
+        },
+        {
+          "name": "side_diagonal.albedo_mae.max",
+          "operator": "<=",
+          "threshold": 0.035,
+          "value": 0.22188356518745422
+        }
+      ]
+    },
+    "residual_map": {
+      "path": null,
+      "status": "MISSING"
+    }
+  }
+}

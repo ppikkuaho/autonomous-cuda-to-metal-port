@@ -1,6 +1,15 @@
 # Patch Summary
 
-This summarizes the selected Mac-port changes relative to upstream Pixal3D. It is not a full diff.
+This summarizes the selected Mac-port changes relative to upstream Pixal3D. It is
+not a full diff.
+
+The published patch (`patches/pixal3d-mac-port.patch`, applied with
+`patches/apply.sh` onto a pinned upstream commit) touches 14 files (8 modified,
+6 new). It covers the **geometry inference path** and the **texture-export Python
+path** in `inference.py`. It does **not** vendor upstream Pixal3D code, model
+weights, CUDA backends, or the native Metal narrow-band remesh toolchain used by
+the accepted textured candidate — those are documented as dependencies, not
+shipped (see "What the patch does not cover" below).
 
 ## Inference Entry Point
 
@@ -12,7 +21,10 @@ Changes:
 - Add explicit `--device` handling.
 - Add low-VRAM movement policy for selected pipeline stages.
 - Support geometry-only output with `--no_texture`.
-- Add fallback textured GLB export path.
+- Add the texture-export Python path: `export_textured_glb` routes to native
+  `o_voxel.postprocess.to_glb` (with `remesh=True, remesh_band=1`) when its
+  dependencies are present, and otherwise falls back to a pure-Python `trimesh`
+  UV texture export (`export_textured_glb_fallback`).
 - Avoid unguarded CUDA cache/synchronization calls in the selected path.
 - Add manual FOV/debug-step controls used by the frozen canary.
 
@@ -112,3 +124,26 @@ Changes:
 - Compare sparse coordinates/features by coordinate overlap and aligned tensor stats.
 - Replay saved shape latents or FDG tensors through selected Mac boundaries.
 - Package and run CUDA reference audits.
+
+## What The Patch Does Not Cover
+
+The patch is the Mac adaptation only. The following are deliberately treated as
+documented dependencies rather than vendored, consistent with not shipping the
+model or CUDA backends:
+
+- **Upstream Pixal3D source and model weights.** The patch applies onto a clean
+  upstream checkout at a pinned commit; obtain weights from the upstream model
+  cards.
+- **CUDA backends.** `flash_attn`, `flex_gemm`, `o_voxel`, `natten`,
+  `nvdiffrast`, and related CUDA wheels are imported or guarded, not vendored.
+- **Native Metal narrow-band remesh toolchain.** The accepted textured candidate
+  is produced through the native `o_voxel.postprocess.to_glb` remesh boundary
+  invoked by the patched `inference.py`; the native Metal narrow-band remesh
+  kernels themselves are a documented dependency, not part of this patch. The
+  pure-Python `trimesh` fallback in the patch produces a loadable textured GLB
+  but not the accepted-candidate parity result. See
+  `docs/REPRODUCIBILITY.md` and `docs/CUDA_REFERENCE_COMPARISON.md`.
+- **The final-candidate parity-suite runner.** The texture/viewer parity gates
+  are described in `docs/CUDA_REFERENCE_COMPARISON.md`; the suite runner that
+  produced `evidence/reports/final_candidate_parity_summary.json` is not part of
+  the published harness.

@@ -109,5 +109,127 @@ Use:
 
 Limits:
 
-- Current review is geometry-only.
-- It does not approve texture, color, material, or style transfer.
+- Geometry review approves structure only.
+- It does not, by itself, approve texture, color, material, or style transfer; the texture/viewer gates below cover that.
+
+## Texture / Viewer Parity Metrics
+
+These metrics were added for the texture stage. They are evaluated against the
+CUDA textured GLB treated as a frozen oracle for the same frozen
+robot/manual-FOV 12-step input, seed `42`. They support a frozen-target
+texture/viewer parity result for one accepted candidate, not a general texture
+or style parity claim.
+
+### Texture Boundary-Capture Metrics
+
+Definition:
+
+Tensor-level comparison of the neural texture path between CUDA and Mac at
+captured internal boundaries, with shape and noise controlled (CUDA texture
+noise replayed through the Mac path).
+
+Use:
+
+- Localizes where, if anywhere, the neural texture path diverges from CUDA.
+- Separates a neural-field problem from a downstream shell/UV/export problem.
+
+Current results (H100 boundary capture):
+
+- Texture-SLat coordinate Jaccard `1.0`, feature mean cosine `0.999971`.
+- Decoded texture-voxel coordinate Jaccard `0.99653`, feature MAE `0.000931`.
+- Decoded-PBR base-color MAE `~0.0009` on the same shell.
+
+Interpretation:
+
+- The neural texture field is numerically very close to CUDA at the captured
+  boundaries for this frozen target.
+- This proves the texture content is not the dominant gap. It does not by itself
+  prove final viewer parity, because mesh extraction, UV unwrap/atlas, surface
+  sampling, and viewer/material interpretation are downstream of these
+  boundaries.
+
+Limit:
+
+- Boundary capture is available only for this frozen input. It is not a general
+  neural-texture parity statement.
+
+### Sampled Multi-View Parity Gate
+
+Definition:
+
+Fixed, normalized orthographic comparison of the candidate GLB against the CUDA
+GLB across eight azimuths and high/low elevations, plus a deterministic
+sampled-surface backend run under a locked gate signature. The accepted
+candidate was summarized under a `4`-million-sample surface-proxy gate, and the
+gate held across seeds `42`, `43`, and `44`.
+
+Use:
+
+- Rejects or ranks local geometry/export/texture candidates on silhouette,
+  boundary, support, area, depth, ray-thickness, hit topology, surface
+  distance, normal, albedo, and shaded-color rows before any human review.
+
+What it proves / does not prove:
+
+- A pass means the candidate is viewer-equivalent to CUDA under the locked
+  software-render and `model-viewer` conditions for this frozen target.
+- It does not prove bitwise tensor identity, identical triangle order, identical
+  UV packing, or parity for any other input.
+
+### Final-Candidate Gate Set
+
+Definition:
+
+The integrated native candidate is accepted only when all thirteen
+final-candidate output gates pass: GLB validation, GLB material semantics,
+deterministic software multi-view geometry/solidity/color, sampled high/low
+support, full-mesh exact-horizon orientation/winding, browser `model-viewer`
+parity, browser high/low parity, browser close-up texture/detail parity,
+browser specular/material-response parity, and the locked one-command summary
+that recomputes each verdict and validates artifact provenance.
+
+Use:
+
+- A single accept/reject decision for a final texture candidate, anchored to a
+  fixed reference and candidate GLB with locked thresholds.
+
+Limit:
+
+- Tensor-boundary and texture-attribution diagnostics explain failures but
+  cannot override a failing output gate.
+
+### Adversarial And Positive Controls
+
+Use:
+
+- Calibrate the gate so a pass is meaningful. The gate must accept benign
+  positives and reject planted defects under the same locked thresholds.
+
+Current control behavior:
+
+- Positives that must pass: CUDA versus itself, a CUDA `trimesh` round-trip, a
+  benign uniform-scale GLB, and a topology-changing face-split GLB that
+  preserves the surface and UVs.
+- Negatives that must fail: scaled-geometry, flipped-winding, gamma/color-shifted,
+  metallic/roughness-texture, and a known-bad earlier candidate.
+
+Interpretation:
+
+- A diagnostic is not a fidelity gate until controls calibrate it. The same
+  thresholds that accept the integrated native candidate reject these planted
+  defects, which is what makes the final pass load-bearing for the frozen
+  target.
+
+### Human Texture Review
+
+Use:
+
+- Final confirmation after the computational gate passes. Reviewers inspect
+  paired default, close-up, and specular render sheets.
+
+Limits:
+
+- Human review is positioned after the computational gate, never as the
+  measurement. It accepts texture/material parity only for the exact accepted
+  candidate against the CUDA reference. Earlier candidates explicitly failed
+  this review.

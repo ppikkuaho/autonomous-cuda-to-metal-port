@@ -6,7 +6,7 @@ This repository contains two things. The **artifact** is a working Apple Silicon
 
 > **Codex performed the technical execution; a multi-model advisor panel and a set of durable artifacts held the work pointed at the right problem and tied each claim to recorded evidence.**
 
-## The setup, so you can copy it
+## The setup
 
 The agent ran as a long-horizon **Codex goal**: an objective plus a definition-of-done that could only be marked complete once the work actually met it, re-entered whenever the agent went idle so the run kept making progress past the first plausible result. That engine is generic. What made it productive on a hard problem is the per-project harness it ran on, which is the reusable part:
 

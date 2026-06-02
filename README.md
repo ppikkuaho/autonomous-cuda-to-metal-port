@@ -1,6 +1,6 @@
 # autonomous-cuda-to-metal-port-via-modified-codex-harness
 
-> A long-horizon agentic engineering run: a coding agent kept on a hard, verifiable goal for days by a steering harness, and the artifact the run produced. The artifact is a verification-first port of Pixal3D's CUDA-oriented image-to-3D path to Apple Silicon, validated against a CUDA H100 reference.
+> A medium-long-horizon agentic engineering run: a coding agent kept on a hard, verifiable goal for days by a steering harness, and the artifact the run produced. The artifact is a verification-first port of Pixal3D's CUDA-oriented image-to-3D path to Apple Silicon, validated against a CUDA H100 reference.
 
 This repository contains two things. The **artifact** is a working Apple Silicon adaptation of Pixal3D's geometry-and-texture inference/export path, checked stage-by-stage against native CUDA. The **process** is how it was produced: the port was built by a coding agent (Codex) running against a single long-horizon goal, kept on course by a steering harness operating in place of continuous human supervision. The harness consists of durable planning files, a multi-model advisor panel, falsification-first experiment registries, and adversarial verification gates that grade the work computationally. The run took roughly **72 hours of agent working time across about a week**, paused by hand only for local-compute contention or usage limits, and was **human-steered about five times**.
 

@@ -35,7 +35,7 @@ For one frozen input (a sample robot image, fixed seed, manual field-of-view, 12
 
 **Geometry** transfers at the coarse structural level (0.9882 coordinate Jaccard; ~10% mesh density; ~1% scale), and the Mac mesh/export path is exact when fed CUDA's own neural tensors, so the divergence is localized upstream in the neural decode. The HR latent cosine of ~0.52 marks the limit: coarse layout matches; fine latent detail does not. This is structural-geometry agreement; high-resolution latent features diverge.
 
-**Texture/viewer parity** was the long final stretch. After dozens of rejected candidates and a 6,912-variant convention sweep that ruled out cheap explanations, a fresh H100 boundary capture showed the neural texture path is numerically very close to CUDA at the captured boundaries (texture-SLat cosine 0.999971; decoded-PBR color MAE ~0.0009). The integrated native candidate then cleared all 13 final-candidate gates against the CUDA reference, under a 4-million-sample parity gate stable across three seeds, with viewer-accurate normal semantics, followed by human visual acceptance of the paired render sheets. This parity is **accepted for that exact frozen candidate/reference pair only**; it is not general Pixal3D texture parity.
+**Texture/viewer parity** required a fresh H100 boundary capture that showed the neural texture path is numerically very close to CUDA at the captured boundaries (texture-SLat cosine 0.999971; decoded-PBR color MAE ~0.0009). The integrated native candidate then cleared all 13 final-candidate gates against the CUDA reference, under a 4-million-sample parity gate stable across three seeds, with viewer-accurate normal semantics, followed by human visual acceptance of the paired render sheets. 
 
 ## Why it's hard
 
@@ -54,7 +54,7 @@ The sparse-conv fallback alone is a from-scratch submanifold 3D-convolution kern
 
 ## Calibrating the fidelity metric
 
-An early diagnostic treated mesh-graph fragmentation as evidence of a broken port, until the H100 reference turned out to be more fragmented under the same metric (CUDA: 2,571 components at 4-step vs the Mac's 1,524). The fragmentation was the model's behavior, and the diagnostic was uncalibrated. The lesson, recorded in [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md): a diagnostic is not a fidelity gate until it has been calibrated against a reference. The harness routed the run to measure ground truth by spending a paid H100 capture before promoting the diagnostic to a gate.
+An early diagnostic treated mesh-graph fragmentation as evidence of a broken port, until the H100 reference turned out to be more fragmented under the same metric (CUDA: 2,571 components at 4-step vs the Mac's 1,524). The fragmentation was the model's behavior, and the diagnostic was uncalibrated. 
 
 Along the way the run found and fixed real bugs: a **silent node-dropping traversal bug in a Metal BVH kernel** (lifting shell-area parity vs CUDA from 0.33 to 0.99 once it switched to stackless traversal), and a **texture-color sampling bug** in the MPS `grid_sample` fallback (collapsing base-color error from 0.169 to 0.012). Both were caught by validating against the real CUDA path.
 

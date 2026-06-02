@@ -4,7 +4,7 @@
 
 This repository contains two things. The **artifact** is a working Apple Silicon adaptation of Pixal3D's geometry-and-texture inference/export path, checked stage-by-stage against native CUDA. The **process** is how it was produced: the port was built by a coding agent (Codex) running against a single long-horizon goal, kept on course by a steering harness operating in place of continuous human supervision. The harness consists of durable planning files, a multi-model advisor panel, falsification-first experiment registries, and adversarial verification gates that grade the work computationally. The run took roughly **72 hours of agent working time across about a week**, paused by hand only for local-compute contention or usage limits, and was **human-steered about five times**. The division of labor:
 
-> **Codex performed the technical execution; a multi-model advisor panel and a set of durable artifacts held the work pointed at the right problem and tied each claim to recorded evidence. Human steering was given to tighten the original completion goal, authorize compute time usage on runpod, and confirm the task completion with final visual parity check.**
+> **GPT 5.5 xhigh via a modified codex harness performed the technical execution; a multi-model advisor panel and a set of durable artifacts held the work pointed at the right problem and tied each claim to recorded evidence. Human steering was given to tighten the original completion goal, authorize compute time usage on runpod, and confirm the task completion with final visual parity check.**
 
 ## The setup
 

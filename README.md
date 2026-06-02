@@ -1,4 +1,4 @@
-# autonomous-cuda-to-metal-port
+# autonomous-cuda-to-metal-port-via-modified-codex-harness
 
 > A long-horizon agentic engineering run: a coding agent kept on a hard, verifiable goal for days by a steering harness, and the artifact the run produced. The artifact is a verification-first port of Pixal3D's CUDA-oriented image-to-3D path to Apple Silicon, validated against a CUDA H100 reference.
 
